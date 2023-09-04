@@ -11,7 +11,7 @@
 ```
   id: "h182hofa8yhr-4hiofau3-ui3o231jv"
   title: "Asus Expertbook"
-  preview_img: [
+  imgs: [
     "https://i.ss.lv/gallery/6/1120/279831/55966116.th2.jpg",
     "https://i.ss.lv/gallery/6/1120/279831/55966116.th2.jpg"
   ]
