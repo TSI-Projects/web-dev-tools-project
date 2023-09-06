@@ -3,8 +3,12 @@ export default defineNuxtConfig({
     devtools: {
         enabled: true
     },
+    devServer: {
+        port: 3001,
+    },
     modules: [
         'nuxt-quasar-ui',
+        '@nuxt/content',
     ],
     quasar: {
         lang: 'en-US',

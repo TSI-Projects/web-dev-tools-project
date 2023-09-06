@@ -5,22 +5,12 @@
             class="bg-primary text-white"
         >
             <q-toolbar>
-                <div class="test__test">
-                    adasd
-                </div>
-                <q-toolbar-title
-                    
-                    shrink
-                >
+                <q-toolbar-title>
                     Title
                 </q-toolbar-title>
-
-                <q-btn
-                    dense
-                    flat
-                    round
-                    :icon="mdiMenu"
-                    @click="toggleRightDrawer"
+                <search-input
+                    style="width: 32vw;"
+                    @perform-search="onSearchAds"
                 />
             </q-toolbar>
         </q-header>
@@ -53,14 +43,14 @@
             </q-list>
         </q-drawer> -->
 
-        <q-drawer
+        <!-- <q-drawer
             v-model="rightDrawerOpen"
             show-if-above
             side="right"
             bordered
         >
-        <!-- drawer content -->
-        </q-drawer>
+
+        </q-drawer> -->
 
         <q-page-container>
             <slot />
@@ -76,11 +66,9 @@
 </template>
 
 <script lang="ts" setup>
-import { mdiMenu } from '@quasar/extras/mdi-v7';
+const router = useRouter();
 
-const rightDrawerOpen = ref(false);
-
-const toggleRightDrawer = () => {
-    rightDrawerOpen.value = !rightDrawerOpen.value;
-};
+const onSearchAds = (query?: string) => {
+    router.push({ name: 'index', query: { query: query } });
+}
 </script>
