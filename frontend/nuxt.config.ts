@@ -8,7 +8,6 @@ export default defineNuxtConfig({
     },
     modules: [
         'nuxt-quasar-ui',
-        '@nuxt/content',
     ],
     quasar: {
         lang: 'en-US',
