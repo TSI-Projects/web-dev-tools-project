@@ -3,6 +3,7 @@
         v-ripple
         class="q-hoverable cursor-pointer"
         href="http://localhost"
+        @click="goToProduct"
     >
         <div
             tabindex="-1"
@@ -29,6 +30,7 @@
                 {{ props.price }}
             </div>
         </q-card-section>
+        <q-separator />
     </q-card>
 </template>
 
@@ -39,12 +41,18 @@ const props = defineProps<{
     title: string;
     description: string;
     price: string;
+    url: string;
 }>();
 
 const router = useRouter();
 
 const goToProduct = () => {
-    router.push({ name: 'product-id', params: { id: props.id } });
+    router.push({
+        name: 'products-id',
+        params: {
+            id: btoa(props.url),
+        },
+    });
 };
 </script>
 
