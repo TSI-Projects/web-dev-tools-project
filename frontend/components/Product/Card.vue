@@ -1,9 +1,13 @@
 <template>
     <q-card
         v-ripple
-        class="cursor-pointer"
-        @click="goToAd"
+        class="q-hoverable cursor-pointer"
+        href="http://localhost"
     >
+        <div
+            tabindex="-1"
+            class="q-focus-helper"
+        />
         <q-img :src="props.previewImg" />
         <q-card-section>
             <div
@@ -39,8 +43,8 @@ const props = defineProps<{
 
 const router = useRouter();
 
-const goToAd = () => {
-    router.push({ name: 'ads-id', params: { id: props.id } })
+const goToProduct = () => {
+    router.push({ name: 'product-id', params: { id: props.id } });
 };
 </script>
 
