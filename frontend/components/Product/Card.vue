@@ -11,6 +11,9 @@
                 style="--line-clamp: 1;"
             >
                 {{ props.title }}
+                <q-tooltip max-width="300px">
+                    {{ props.title }}
+                </q-tooltip>
             </div>
             <div
                 class="text-subtitle2 line--clamp"
