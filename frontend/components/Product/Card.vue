@@ -6,10 +6,16 @@
     >
         <q-img :src="props.previewImg" />
         <q-card-section>
-            <div class="text-body1 ad-title">
+            <div
+                class="text-body1 text-weight-bold line--clamp"
+                style="--line-clamp: 1;"
+            >
                 {{ props.title }}
             </div>
-            <div class="text-subtitle2 ad-description">
+            <div
+                class="text-subtitle2 line--clamp"
+                style="--line-clamp: 2;"
+            >
                 {{ props.description }}
             </div>
             <div class="text-h6 text-weight-bold text-red">
@@ -20,16 +26,14 @@
 </template>
 
 <script lang="ts" setup>
-interface Props
-{
+const props = defineProps<{
     id: string;
-    title: string;
     previewImg: string;
+    title: string;
     description: string;
     price: string;
-}
+}>();
 
-const props = defineProps<Props>();
 const router = useRouter();
 
 const goToAd = () => {
@@ -38,20 +42,10 @@ const goToAd = () => {
 </script>
 
 <style lang="scss" scoped>
-@mixin lineClamp($lines) {
+.line--clamp {
     overflow: hidden;
     display: -webkit-box;
-    -webkit-line-clamp: $lines;
+    -webkit-line-clamp: var(--line-clamp, 2);
     -webkit-box-orient: vertical;
-}
-
-.ad-title
-{
-    @include lineClamp(1);
-}
-
-.ad-description
-{
-    @include lineClamp(2);
 }
 </style>

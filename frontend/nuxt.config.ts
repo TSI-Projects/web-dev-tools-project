@@ -17,5 +17,13 @@ export default defineNuxtConfig({
             'Dark',
             'Screen',
         ],
+        sassVariables: 'assets/css/quasar.variables.scss',
+    },
+    runtimeConfig: {
+        public: {
+            api: {
+                baseUrl: 'http://localhost:8080',
+            },
+        }
     },
 });
