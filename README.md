@@ -1,4 +1,5 @@
-# Post preview struct 
+# Post preview struct
+
 ```
   id: "h182hofa8yhr-4hiofau3-ui3o231jv"
   title: "Asus Expertbook"
@@ -8,6 +9,7 @@
 ```
 
 # Full post struct
+
 ```
   id: "h182hofa8yhr-4hiofau3-ui3o231jv"
   title: "Asus Expertbook"
@@ -19,3 +21,12 @@
   price: "330€"
   product_link: "https://www.ss.lv/msg/ru/electronics/computers/noutbooks/lkjmx.html"
 ```
+
+# How to test locally
+
+1. Go to backend/scrapper directory
+2. Run command ```go run main.go```
+
+# Endpoint for local server
+
+Example of endpoint: <http://localhost:8080/search?product=rtx+3060>
