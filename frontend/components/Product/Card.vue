@@ -3,7 +3,7 @@
         v-ripple
         class="q-hoverable cursor-pointer"
         href="http://localhost"
-        @click="goToProduct"
+        @click="navigateToProduct"
     >
         <div
             tabindex="-1"
@@ -30,13 +30,11 @@
                 {{ props.price }}
             </div>
         </q-card-section>
-        <q-separator />
     </q-card>
 </template>
 
 <script lang="ts" setup>
 const props = defineProps<{
-    id: string;
     previewImg: string;
     title: string;
     description: string;
@@ -44,15 +42,12 @@ const props = defineProps<{
     url: string;
 }>();
 
-const router = useRouter();
+const emits = defineEmits<{
+    (e: 'navigate', url: string): void,
+}>();
 
-const goToProduct = () => {
-    router.push({
-        name: 'products-id',
-        params: {
-            id: btoa(props.url),
-        },
-    });
+const navigateToProduct = () => {
+    emits('navigate', props.url);
 };
 </script>
 

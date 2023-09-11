@@ -24,14 +24,14 @@
                             v-for="product in result"
                             class="col-6 col-xl-2 col-lg-2 col-md-3 col-sm-4"
                         >
-                            {{ product }}
-                            <!-- <product-card
-                                :id="product.id"
+                            <product-card
                                 :title="product.title"
                                 :description="product.description"
                                 :price="product.price"
                                 :preview-img="product.preview_img"
-                            /> -->
+                                :url="product.url"
+                                @navigate="navigateToProduct"
+                            />
                         </div>
                     </div>
                 </div>
@@ -89,7 +89,21 @@ const { data: result, status, refresh } = await products.paginate({
     query,
 });
 
+const navigateToProduct = (url: string) => {
+    router.push({
+        name: 'products-url',
+        params: {
+            url: btoa(url),
+        },
+    });
+};
+
 watch(query, (value) => {
-    router.push({ name: 'index', query: { query: value } });
+    router.push({
+        name: 'index',
+        query: {
+            query: value,
+        },
+    });
 });
 </script>

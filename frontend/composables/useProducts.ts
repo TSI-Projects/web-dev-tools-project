@@ -4,6 +4,7 @@ export type Product = {
     preview_img: string;
     description: string;
     price: string;
+    url: string;
 }
 
 export type FetchAllOptions = {
