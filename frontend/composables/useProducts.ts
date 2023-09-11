@@ -21,7 +21,11 @@ export default function () {
                 product: options.query || 'rtx 3060',
             },
             headers: {
-                'acccept': 'application/json',
+                'accept': 'application/json',
+            },
+            // TODO: delete this when backend is ready
+            parseResponse(string) {
+                return JSON.parse(string);
             },
         });
     };
