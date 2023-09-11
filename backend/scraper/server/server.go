@@ -12,12 +12,12 @@ import (
 
 func Start() {
 	r := mux.NewRouter()
-	r.HandleFunc("/search", productHandler).Methods(http.MethodPost)
+	r.HandleFunc("/search", productHandler).Methods(http.MethodGet)
 
 	log.Println("Server is starting...")
 	headersOk := handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization"})
 	originsOk := handlers.AllowedOrigins([]string{"*"})
-	methodsOk := handlers.AllowedMethods([]string{http.MethodPost})
+	methodsOk := handlers.AllowedMethods([]string{http.MethodPost, http.MethodGet})
 
 	log.Fatal(http.ListenAndServe(":8080", handlers.CORS(originsOk, headersOk, methodsOk)(r)))
 }
