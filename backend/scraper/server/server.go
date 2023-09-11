@@ -6,12 +6,20 @@ import (
 	"net/http"
 
 	"github.com/AndrejsPon00/web-dev-tools/backend/scrapper"
+	"github.com/gorilla/handlers"
+	"github.com/gorilla/mux"
 )
 
 func Start() {
-	http.HandleFunc("/search", productHandler)
+	r := mux.NewRouter()
+	r.HandleFunc("/search", productHandler).Methods(http.MethodGet)
+
 	log.Println("Server is starting...")
-	http.ListenAndServe(":8080", nil)
+	headersOk := handlers.AllowedHeaders([]string{"*"})
+	originsOk := handlers.AllowedOrigins([]string{"*"})
+	methodsOk := handlers.AllowedMethods([]string{"*"})
+
+	log.Fatal(http.ListenAndServe(":8080", handlers.CORS(originsOk, headersOk, methodsOk)(r)))
 }
 
 func productHandler(w http.ResponseWriter, r *http.Request) {

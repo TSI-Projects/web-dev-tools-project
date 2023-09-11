@@ -1,9 +1,7 @@
 package scrapper
 
 import (
-	"bufio"
 	"fmt"
-	"os"
 	"strings"
 
 	"github.com/AndrejsPon00/web-dev-tools/backend/module"
@@ -53,21 +51,6 @@ func WebsiteScrapperSS(input string) []*module.PreviewPost {
 
 func combineURL(baseURL, query string) string {
 	return fmt.Sprintf(baseURL + BASE_SEARCH_QUERY + query)
-}
-
-func takInput() (string, error) {
-	var input string
-	scanner := bufio.NewScanner(os.Stdin)
-
-	if scanner.Scan() {
-		input = scanner.Text()
-	}
-
-	if err := scanner.Err(); err != nil {
-		return input, fmt.Errorf("failed to scan input: %v", err)
-	}
-
-	return input, nil
 }
 
 func encodeStringToHTML(query string) string {
