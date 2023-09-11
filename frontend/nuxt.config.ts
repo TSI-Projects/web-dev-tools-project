@@ -3,6 +3,9 @@ export default defineNuxtConfig({
     devtools: {
         enabled: true
     },
+    devServer: {
+        port: 3001,
+    },
     modules: [
         'nuxt-quasar-ui',
     ],
@@ -14,5 +17,13 @@ export default defineNuxtConfig({
             'Dark',
             'Screen',
         ],
+        sassVariables: 'assets/css/quasar.variables.scss',
+    },
+    runtimeConfig: {
+        public: {
+            api: {
+                baseUrl: 'http://localhost:8080',
+            },
+        }
     },
 });
