@@ -15,9 +15,9 @@ func Start() {
 	r.HandleFunc("/search", productHandler).Methods(http.MethodGet)
 
 	log.Println("Server is starting...")
-	headersOk := handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization"})
+	headersOk := handlers.AllowedHeaders([]string{"*"})
 	originsOk := handlers.AllowedOrigins([]string{"*"})
-	methodsOk := handlers.AllowedMethods([]string{http.MethodPost, http.MethodGet})
+	methodsOk := handlers.AllowedMethods([]string{"*"})
 
 	log.Fatal(http.ListenAndServe(":8080", handlers.CORS(originsOk, headersOk, methodsOk)(r)))
 }
