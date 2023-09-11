@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	BASE_SS_URL       = "https://www.ss.lv/"
+	BASE_SS_URL       = "https://www.ss.lv"
 	BASE_SEARCH_QUERY = "ru/search-result/?q="
 )
 
