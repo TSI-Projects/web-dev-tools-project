@@ -19,7 +19,7 @@ func Start() {
 	originsOk := handlers.AllowedOrigins([]string{"*"})
 	methodsOk := handlers.AllowedMethods([]string{http.MethodPost})
 
-	log.Fatal(http.ListenAndServe(":8801", handlers.CORS(originsOk, headersOk, methodsOk)(r)))
+	log.Fatal(http.ListenAndServe(":8080", handlers.CORS(originsOk, headersOk, methodsOk)(r)))
 }
 
 func productHandler(w http.ResponseWriter, r *http.Request) {
