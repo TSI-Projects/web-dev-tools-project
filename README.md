@@ -40,10 +40,11 @@ the development server on host <http://localhost:8080>.
 
 <table>
 <tr>
-<td> Status </td> <td> Response </td>
+<td>Status</td>
+<td>Response</td>
 </tr>
 <tr>
-<td> 200 </td>
+<td>200</td>
 <td>
 
 ```json
