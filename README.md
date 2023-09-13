@@ -13,7 +13,7 @@
 If you don't have the Golang runtime installed on your system, you'll need to install it by following the installation guide in the official [Golang documentation](https://go.dev/doc/install).
 
 ## Development server
-1. Go to [backend scraper](backend/scrapper) directory.
+1. Go to [backend scrapper](backend/scraper) directory.
 2. Run following command start the development server:
 
 ```bash
