@@ -1,18 +1,18 @@
 # Table of Contents
 
 - [Backend](#backend)
-   - [Development server](#development-server)
+   - [Development](#development)
    - [API](#api)
 - [Frontend](#frontend)
    - [Setup](#setup)
-   - [Development Server](#development-server-1)
+   - [Development](#development-1)
    - [Production](#production)
 
 # Backend
 
 If you don't have the Golang runtime installed on your system, you'll need to install it by following the installation guide in the official [Golang documentation](https://go.dev/doc/install).
 
-## Development server
+## Development
 1. Go to [backend scrapper](backend/scraper) directory.
 2. Run following command start the development server:
 
@@ -70,7 +70,6 @@ If you don't have the JavaScript runtime installed on your system, you'll need t
 - [NodeJS](https://nodejs.org/en/download)
 - [Bun](https://bun.sh/docs/installation)
 
-
 ## Setup
 
 1. Go to [frontend](frontend) directory.
@@ -89,7 +88,7 @@ bun install
 
 It will automatically install all necessary dependencies. You can then either run [development server](#development-server) or [bundle/build](#production) the production server.
 
-## Development Server
+## Development
 
 Start the development server on `http://localhost:3000`:
 
