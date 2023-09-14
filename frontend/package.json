@@ -19,6 +19,7 @@
     },
     "dependencies": {
         "@quasar/extras": "^1.16.6",
+        "qs": "^6.11.2",
         "quasar": "^2.12.7"
     }
 }
