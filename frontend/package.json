@@ -12,9 +12,9 @@
         "@nuxt/devtools": "latest",
         "@nuxt/eslint-config": "^0.2.0",
         "eslint": "^8.49.0",
-        "nuxt": "^3.7.2",
+        "nuxt": "^3.7.3",
         "nuxt-quasar-ui": "^2.0.5",
-        "sass": "^1.66.1",
+        "sass": "^1.67.0",
         "typescript": "^5.2.2"
     },
     "dependencies": {
