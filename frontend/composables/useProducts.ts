@@ -35,7 +35,7 @@ export default function () {
     };
 
     return {
-        paginate: fetchAll,
-        find: fetchOne,
+        fetchAll,
+        fetchOne,
     };
 }

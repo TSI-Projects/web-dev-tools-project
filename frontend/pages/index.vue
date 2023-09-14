@@ -85,7 +85,7 @@ const products = useProducts();
 
 const query = ref(route.query?.query as string | undefined);
 
-const { data: result, status, refresh } = await products.paginate({
+const { data: result, status, refresh } = await products.fetchAll({
     query,
 });
 
