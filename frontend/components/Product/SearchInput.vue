@@ -25,7 +25,7 @@
                 :loading="props.loading"
                 :disable="inputRef?.hasError || false"
                 flat
-                @click="updateModelValue"
+                @click="applySearch"
             >
                 <q-icon
                     left
@@ -38,6 +38,7 @@
 
 <script lang="ts" setup>
 import { mdiHistory, mdiMagnify } from '@quasar/extras/mdi-v7';
+import { QInput } from 'quasar';
 
 const emits = defineEmits<{
     (e: 'update:modelValue', query?: string): void;
@@ -56,17 +57,17 @@ const query = ref(props.modelValue);
 
 const onEnterKeyDown = (event: KeyboardEvent) => {
     if (event.code === 'Enter') {
-        updateModelValue();
+        applySearch();
     }
 };
 
 const clearQuery = () => {
-    query.value = '';
+    query.value = undefined;
 
-    updateModelValue();
+    applySearch();
 };
 
-const updateModelValue = () => {
+const applySearch = () => {
     inputRef.value?.blur();
 
     const finalQuery = (query.value && query.value.length > 0)
@@ -75,4 +76,8 @@ const updateModelValue = () => {
 
     emits('update:modelValue', finalQuery);
 };
+
+watch(() => props.modelValue, (newModelValue) => {
+    query.value = newModelValue;
+});
 </script>
