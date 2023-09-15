@@ -11,8 +11,13 @@ export type Product = {
 
 export type FetchAllParameters = {
     query: {
-        query?: string | undefined;
-        sources?: string[] | string | undefined;
+        query: string | undefined;
+        sources: string[];
+        categories: string[];
+        price: {
+            from: number | undefined;
+            to: number | undefined;
+        };
     };
 };
 
@@ -24,6 +29,12 @@ export default function () {
             baseURL: publicConfig.api.baseUrl || 'http://localhost',
             params: {
                 product: params.query.query,
+                sources: params.query.sources,
+                categories: params.query.categories,
+                price: {
+                    from: params.query.price.from,
+                    to: params.query.price.to,
+                },
             },
             onRequest: (ctx) => {
                 if (ctx.options.params || ctx.options.query) {
