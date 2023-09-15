@@ -1,0 +1,19 @@
+.app-drawer
+{
+    display: flex;
+    flex-direction: column;
+
+    &__content
+    {
+        flex: 1 1 auto;
+        height: 100%;
+        width: 100%;
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+
+    &__append
+    {
+        // ...
+    }
+}
