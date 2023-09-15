@@ -1,3 +1,5 @@
+import qs from 'qs';
+
 export type Product = {
     id: string;
     title: string;
@@ -5,20 +7,38 @@ export type Product = {
     description: string;
     price: string;
     url: string;
-}
+};
 
-export type FetchAllOptions = {
-    query: string | undefined | Ref<string | undefined>;
-}
+export type FetchAllParameters = {
+    query: {
+        query?: string | undefined;
+        sources?: string[] | string | undefined;
+    };
+};
 
 export default function () {
     const { public: publicConfig } = useRuntimeConfig();
 
-    const fetchAll = (options: FetchAllOptions) => {
-        return useFetch<Product[]>('/search', {
+    const fetchAll = (params: FetchAllParameters): Promise<Product[]> => {
+        return $fetch<Product[]>('/search', {
             baseURL: publicConfig.api.baseUrl || 'http://localhost',
             params: {
-                product: options.query || 'rtx 3060',
+                product: params.query.query,
+            },
+            onRequest: (ctx) => {
+                if (ctx.options.params || ctx.options.query) {
+                    ctx.request = ctx.request + qs.stringify({
+                        ...ctx.options.query,
+                        ...ctx.options.params,
+                    }, {
+                        arrayFormat: 'brackets',
+                        addQueryPrefix: true,
+                        skipNulls: true,
+                    });
+
+                    ctx.options.params = undefined;
+                    ctx.options.query = undefined;
+                }
             },
             headers: {
                 'accept': 'application/json',
