@@ -17,8 +17,11 @@ export default defineNuxtConfig({
             'Dark',
             'Screen',
         ],
-        sassVariables: 'assets/css/quasar.variables.scss',
+        sassVariables: '@/assets/css/quasar.variables.scss',
     },
+    css: [
+        '@/assets/css/app.scss',
+    ],
     runtimeConfig: {
         public: {
             api: {
