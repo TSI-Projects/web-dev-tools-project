@@ -4,15 +4,11 @@ import qs from 'qs';
 export default <RouterConfig>{
     stringifyQuery: (query) => {
         return qs.stringify(query, {
-            arrayFormat: 'comma',
-            allowDots: true,
+            arrayFormat: 'brackets',
             skipNulls: true,
         });
     },
     parseQuery: (search) => {
-        return qs.parse(search, {
-            comma: true,
-            allowDots: true,
-        });
+        return qs.parse(search);
     },
 };
