@@ -5,17 +5,19 @@
                 <div class="row justify-center">
                     <div class="col-12 col-xl-5 col-lg-5 col-md-6 col-sm-12">
                         <product-search-input
-                            v-model="query"
+                            :model-value="parsedQuery.query"
                             :loading="status === 'pending'"
+                            @update:model-value="(query) => parsedQuery = { ...parsedQuery, query }"
                         />
+                        {{ parsedQuery }}
                     </div>
                 </div>
-            </div>
+            </div> 
             <template v-if="status === 'success'">
                 <div class="col-auto">
                     <product-title
                         :count="0"
-                        :has-query="!!query"
+                        :has-query="!!parsedQuery.query"
                     />
                 </div>
                 <div class="col-auto">
@@ -50,7 +52,7 @@
                                 <template #action>
                                     <q-btn
                                         flat
-                                        @click="refresh()"
+                                        @click="() => refresh()"
                                     >
                                         <q-icon
                                             left
@@ -73,21 +75,38 @@
                 </div>
             </template>
         </div>
+        <!-- TELEPORT -->
+        <client-only>
+            <teleport to="#q-page-container">
+                <q-page-sticky
+                    id="q-page-sticky"
+                    position="bottom-right"
+                    :offset="[16, 16]"
+                >
+                    <product-filter-fab />
+                </q-page-sticky>
+            </teleport>
+            <teleport to="#q-layout">
+                <product-filter-drawer
+                    v-model="parsedQuery"
+                    :loading="status === 'pending'"
+                />
+            </teleport>
+        </client-only>
     </q-page>
 </template>
 
 <script lang="ts" setup>
 import { mdiAlertDecagram, mdiReload } from '@quasar/extras/mdi-v7';
+import { LocationQuery } from '#vue-router';
 
-const router = useRouter();
 const route = useRoute();
+const router = useRouter();
 const products = useProducts();
+const array = useArray();
 
-const query = ref(route.query?.query as string | undefined);
-
-const { data: result, status, refresh } = await products.fetchAll({
-    query,
-});
+let skipRouteWatcher = false;
+let skipParseQueryWatcher = false;
 
 const navigateToProduct = (url: string) => {
     router.push({
@@ -98,12 +117,63 @@ const navigateToProduct = (url: string) => {
     });
 };
 
-watch(query, (value) => {
+const updateQuery = (params: any) => {
     router.push({
         name: 'index',
         query: {
-            query: value,
+            ...route.query,
+            ...params,
         },
     });
+};
+
+const parseQuery = (query: LocationQuery): Ref<ParsedQuery> => {
+    return ref<ParsedQuery>({
+        query: query?.query as string | undefined,
+        sources: array.wrap<string>(query?.sources),
+        categories: array.wrap<string>(query?.categories),
+        price: {
+            from: query?.price?.from,
+            to: query?.price?.to,
+        },
+    });
+};
+
+const parsedQuery = parseQuery(route.query);
+
+const { data: result, status, refresh } = useAsyncData('products', () => products.fetchAll({
+    query: {
+        query: parsedQuery.value.query,
+        sources: parsedQuery.value.sources,
+        categories: parsedQuery.value.categories,
+        price: {
+            from: parsedQuery.value.price.from,
+            to: parsedQuery.value.price.to,
+        },
+    },
+}), {
+    watch: [parsedQuery],
+});
+
+watch(() => route.query, (newRouteQuery) => {
+    if (skipRouteWatcher) {
+        skipRouteWatcher = false;
+        return;
+    }
+
+    skipParseQueryWatcher = true;
+
+    parsedQuery.value = parseQuery(newRouteQuery).value;
+});
+
+watch(parsedQuery, () => {
+    if (skipParseQueryWatcher) {
+        skipParseQueryWatcher = false;
+        return;
+    }
+
+    skipRouteWatcher = true;
+    
+    updateQuery(parsedQuery.value);
 });
 </script>
