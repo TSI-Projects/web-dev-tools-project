@@ -2,7 +2,10 @@ module github.com/AndrejsPon00/web-dev-tools/backend
 
 go 1.20
 
-require github.com/gocolly/colly/v2 v2.1.0
+require (
+	github.com/goccy/go-json v0.10.2
+	github.com/gocolly/colly/v2 v2.1.0
+)
 
 require github.com/felixge/httpsnoop v1.0.1 // indirect
 

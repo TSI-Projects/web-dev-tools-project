@@ -1,9 +1,10 @@
 package server
 
 import (
-	"encoding/json"
 	"log"
 	"net/http"
+
+	"github.com/goccy/go-json"
 
 	"github.com/AndrejsPon00/web-dev-tools/backend/scrapper"
 	"github.com/gorilla/handlers"

@@ -1,11 +1,12 @@
 package scrapper
 
 import (
-	"encoding/json"
 	"log"
 	"net/http"
 	"sync"
 	"time"
+
+	"github.com/goccy/go-json"
 
 	"github.com/AndrejsPon00/web-dev-tools/backend/module"
 	"github.com/AndrejsPon00/web-dev-tools/backend/scrapper/ss.lv"
