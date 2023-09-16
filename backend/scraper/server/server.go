@@ -27,8 +27,9 @@ func productHandler(w http.ResponseWriter, r *http.Request) {
 
 	productName, found := values["product"]
 	if found {
-		products := scrapper.WebsiteScrapperSS(productName[0])
-		output, err := json.Marshal(products)
+		client := scrapper.NewScraper(productName[0])
+		posts := client.ScrapPosts()
+		output, err := json.Marshal(posts)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 		}
