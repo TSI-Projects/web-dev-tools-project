@@ -61,6 +61,10 @@ func (c *Client) ScrapPosts() []*module.PreviewPost {
 			}
 
 			c.Writer.Write(post)
+			if flusher, ok := c.Writer.(http.Flusher); ok {
+				flusher.Flush()
+			}
+
 			log.Println(result)
 		case error := <-c.ErrorChan:
 			log.Fatalln(error.Error())
