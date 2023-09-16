@@ -24,10 +24,9 @@ func Start() {
 
 func productHandler(w http.ResponseWriter, r *http.Request) {
 	values := r.URL.Query()
-
 	productName, found := values["product"]
 	if found {
-		client := scrapper.NewScraper(productName[0])
+		client := scrapper.NewScraper(productName[0], w)
 		posts := client.ScrapPosts()
 		output, err := json.Marshal(posts)
 		if err != nil {

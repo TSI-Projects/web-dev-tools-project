@@ -1,7 +1,9 @@
 package scrapper
 
 import (
+	"encoding/json"
 	"log"
+	"net/http"
 	"sync"
 	"time"
 
@@ -16,12 +18,14 @@ type Client struct {
 	WG           *sync.WaitGroup
 	Collector    *colly.Collector
 	TimeoutTimer *time.Timer
+	Writer       http.ResponseWriter
 	SearchedItem string
 }
 
-func NewScraper(searchedItem string) *Client {
+func NewScraper(searchedItem string, writer http.ResponseWriter) *Client {
 	return &Client{
 		SearchedItem: searchedItem,
+		Writer:       writer,
 		TimeoutTimer: time.NewTimer(time.Second * 5),
 		ErrorChan:    make(chan error),
 		ResultChan:   make(chan *module.PreviewPost),
@@ -49,13 +53,26 @@ func (c *Client) ScrapPosts() []*module.PreviewPost {
 			if !ok {
 				return posts
 			}
-			posts = append(posts, result)
+
+			post, err := toByteArray(result)
+			if err != nil {
+				c.ErrorChan <- err
+			}
+
+			c.Writer.Write(post)
 			log.Println(result)
 		case error := <-c.ErrorChan:
 			log.Fatalln(error.Error())
 		case <-c.TimeoutTimer.C:
 			log.Println("Timeout")
-
 		}
 	}
+}
+
+func toByteArray(any interface{}) ([]byte, error) {
+	output, err := json.Marshal(any)
+	if err != nil {
+		return nil, err
+	}
+	return output, nil
 }
