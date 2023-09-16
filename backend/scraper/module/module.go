@@ -15,3 +15,22 @@ type PreviewPost struct {
 	Price        string `json:"price"`
 	URL          string `json:"url"`
 }
+
+type Error struct {
+	Message string `json:"message"`
+	Code    uint8  `json:"code"`
+}
+
+type Response struct {
+	*Error       `json:"error,omitempty"`
+	*PreviewPost `json:"preview_post,omitempty"`
+	*Post        `json:"post,omitempty"`
+}
+
+type Request struct {
+	Category     []string `json:"category"`
+	Source       []string `json:"source"`
+	PriceMax     uint32   `json:"price_max"`
+	PriceMin     uint32   `json:"price_min"`
+	SearchedItem string   `json:"searched_item"`
+}

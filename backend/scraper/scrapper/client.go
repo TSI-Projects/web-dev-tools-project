@@ -1,12 +1,13 @@
 package scrapper
 
 import (
-	"log"
+	"fmt"
 	"net/http"
 	"sync"
 	"time"
 
 	"github.com/goccy/go-json"
+	log "github.com/sirupsen/logrus"
 
 	"github.com/AndrejsPon00/web-dev-tools/backend/module"
 	"github.com/AndrejsPon00/web-dev-tools/backend/scrapper/ss.lv"
@@ -57,15 +58,15 @@ func (c *Client) ScrapPosts() []*module.PreviewPost {
 
 			post, err := toByteArray(result)
 			if err != nil {
-				c.ErrorChan <- err
+				c.ErrorChan <- fmt.Errorf("services not responding.\nPlease try again later")
+				log.Errorf("Failed to unmarshal, Result: %v: %v", result, err)
 			}
 
 			c.Writer.Write(post)
 			if flusher, ok := c.Writer.(http.Flusher); ok {
 				flusher.Flush()
 			}
-
-			log.Println(result)
+			log.Debugln("Post was successfuly sent to web")
 		case error := <-c.ErrorChan:
 			log.Fatalln(error.Error())
 		case <-c.TimeoutTimer.C:
