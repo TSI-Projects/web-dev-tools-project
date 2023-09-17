@@ -86,15 +86,11 @@
 
 <script lang="ts" setup>
 import { mdiAlertDecagram, mdiReload } from '@quasar/extras/mdi-v7';
-import { LocationQuery } from '#vue-router';
+import { FilterFields } from '~/components/Product/Filter/Drawer.vue';
 
 const route = useRoute();
 const router = useRouter();
 const products = useProducts();
-const array = useArray();
-
-let skipRouteWatcher = false;
-let skipParseQueryWatcher = false;
 
 const navigateToProduct = (url: string) => {
     router.push({
@@ -105,29 +101,31 @@ const navigateToProduct = (url: string) => {
     });
 };
 
-const updateQuery = (params: any) => {
-    router.push({
-        name: 'index',
-        query: {
-            ...route.query,
-            ...params,
-        },
-    });
-};
-
-const parseQuery = (query: LocationQuery): Ref<ParsedQuery> => {
-    return ref<ParsedQuery>({
-        query: query?.query as string | undefined,
-        sources: array.wrap<string>(query?.sources),
-        categories: array.wrap<string>(query?.categories),
-        price: {
-            from: query?.price?.from,
-            to: query?.price?.to,
-        },
-    });
-};
-
-const parsedQuery = parseQuery(route.query);
+const parsedQuery = computed<FilterFields>({
+    get: () => {
+        return {
+            query: route.query.query as string | undefined,
+            sources: route.query.sources as string[] | string | undefined,
+            categories: route.query.categories as string[] | string | undefined,
+            price: {
+                /* @ts-ignore */
+                min: route.query.price?.min as number | undefined,
+                /* @ts-ignore */
+                max: route.query.price?.max as number | undefined,
+            },
+        }
+    },
+    set: (newValue) => {
+        router.push({
+            name: 'index',
+            /* @ts-ignore */
+            query: {
+                ...route.query,
+                ...newValue,
+            },
+        });
+    },
+});
 
 const { data: result, status, refresh } = useAsyncData('products', () => products.fetchAll({
     query: {
@@ -135,33 +133,11 @@ const { data: result, status, refresh } = useAsyncData('products', () => product
         sources: parsedQuery.value.sources,
         categories: parsedQuery.value.categories,
         price: {
-            from: parsedQuery.value.price.from,
-            to: parsedQuery.value.price.to,
+            min: parsedQuery.value.price.min,
+            max: parsedQuery.value.price.max,
         },
     },
 }), {
     watch: [parsedQuery],
-});
-
-watch(() => route.query, (newRouteQuery) => {
-    if (skipRouteWatcher) {
-        skipRouteWatcher = false;
-        return;
-    }
-
-    skipParseQueryWatcher = true;
-
-    parsedQuery.value = parseQuery(newRouteQuery).value;
-});
-
-watch(parsedQuery, () => {
-    if (skipParseQueryWatcher) {
-        skipParseQueryWatcher = false;
-        return;
-    }
-
-    skipRouteWatcher = true;
-    
-    updateQuery(parsedQuery.value);
 });
 </script>

@@ -45,7 +45,7 @@
                         />
                     </div>
                     <div class="col">
-                        <product-filter-price-range     
+                        <product-filter-price-range
                             v-model="price"
                             :loading="props.loading"
                         />
@@ -109,43 +109,41 @@ const props = withDefaults(defineProps<Props>(), {
     loading: false,
 });
 
-const price = ref<Price>({
-    from: props.modelValue.price.from,
-    to: props.modelValue.price.to,
-});
-const sources = ref<string[]>(props.modelValue.sources);
-const categories = ref<string[]>(props.modelValue.categories);
+const query = ref<string | undefined>(props.modelValue.query);
+const sources = ref<string[] | string | undefined>(props.modelValue.sources);
+const categories = ref<string[] | string | undefined>(props.modelValue.categories);
+const price = ref<PriceRange>({ min: props.modelValue.price.min, max: props.modelValue.price.max });
 
 const drawer = ref();
 
 const applyFilters = () => {
     emits('update:modelValue', {
-        query: props.modelValue.query,
-        sources: sources.value,
+        query: query.value,
         categories: categories.value,
+        sources: sources.value,
         price: {
-            from: price.value.from,
-            to: price.value.to,
+            max: price.value.max,
+            min: price.value.min,
         },
     });
 };
 
 const clearFilters = () => {
+    query.value = undefined;
     sources.value = [];
     categories.value = [];
-    price.value = {
-        from: undefined,
-        to: undefined,
-    };
+    price.value = { min: undefined, max: undefined };
 
-    emits('update:modelValue', {
-        query: props.modelValue.query,
-        sources: [],
-        categories: [],
-        price: {
-            from: undefined,
-            to: undefined,
-        },
-    });
+    applyFilters();
 };
+
+watch(() => props.modelValue, (newModelValue) => {
+    query.value = newModelValue.query;
+    sources.value = newModelValue.sources;
+    categories.value = newModelValue.categories;
+    price.value = {
+        min: newModelValue.price.min,
+        max: newModelValue.price.max,
+    };
+});
 </script>
