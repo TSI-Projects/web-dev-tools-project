@@ -23,6 +23,8 @@ func Start() {
 }
 
 func productHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
 	values := r.URL.Query()
 
 	productName, found := values["product"]
