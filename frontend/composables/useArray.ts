@@ -1,7 +1,7 @@
 export default function () {
-    const wrap = <T extends unknown>(value: any): T[] => {
+    const wrap = <T extends unknown, D extends unknown>(value: any, defaultValue: D): T[] | D => {
         if (!value) {
-            return [];
+            return defaultValue;
         }
     
         return !Array.isArray(value)
