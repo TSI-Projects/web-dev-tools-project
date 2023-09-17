@@ -4,10 +4,11 @@
         elevated
         show-if-above
         no-swipe-open
+        :width="360"
         side="right"
         class="app-drawer"
     >
-        <div class="app-drawer__content">
+        <div class="app-drawer__prepend">
             <q-item>
                 <q-item-section avatar>
                     <q-icon :name="mdiFilter" />
@@ -17,6 +18,18 @@
                 </q-item-section>
             </q-item>
             <q-separator />
+            <div class="q-pa-md">
+                <div class="text-body2 q-mb-xs">
+                    Поиск:
+                </div>
+                <product-filter-search-input
+                    v-model="query"
+                    :loading="loading"
+                />
+            </div>
+            <q-separator />
+        </div>
+        <div class="app-drawer__content">
             <div class="q-pa-md">
                 <div class="column q-col-gutter-md">
                     <div class="col">

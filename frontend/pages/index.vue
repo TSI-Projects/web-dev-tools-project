@@ -1,18 +1,6 @@
 <template>
     <q-page padding>
         <div class="column q-col-gutter-md">
-            <div class="col-auto">
-                <div class="row justify-center">
-                    <div class="col-12 col-xl-5 col-lg-5 col-md-6 col-sm-12">
-                        <product-search-input
-                            :model-value="parsedQuery.query"
-                            :loading="status === 'pending'"
-                            @update:model-value="(query) => parsedQuery = { ...parsedQuery, query }"
-                        />
-                        {{ parsedQuery }}
-                    </div>
-                </div>
-            </div> 
             <template v-if="status === 'success'">
                 <div class="col-auto">
                     <product-title
