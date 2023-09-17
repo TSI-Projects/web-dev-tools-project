@@ -28,7 +28,7 @@ export type Option = {
 };
 
 export type Props = {
-    modelValue: string[];
+    modelValue: string[] | string | undefined;
     loading?: boolean;
 };
 
@@ -37,7 +37,7 @@ export type Emits = {
 };
 
 const props = withDefaults(defineProps<Props>(), {
-    modelValue: () => [],
+    modelValue: undefined,
     loading: false,
 });
 
