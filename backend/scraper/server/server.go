@@ -1,9 +1,10 @@
 package server
 
 import (
-	"encoding/json"
 	"log"
 	"net/http"
+
+	"github.com/goccy/go-json"
 
 	"github.com/AndrejsPon00/web-dev-tools/backend/scrapper"
 	"github.com/gorilla/handlers"
@@ -26,11 +27,11 @@ func productHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	values := r.URL.Query()
-
 	productName, found := values["product"]
 	if found {
-		products := scrapper.WebsiteScrapperSS(productName[0])
-		output, err := json.Marshal(products)
+		client := scrapper.NewScraper(productName[0], w)
+		posts := client.ScrapPosts()
+		output, err := json.Marshal(posts)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 		}
