@@ -3,74 +3,75 @@
         Цена:
     </div>
     <div class="row q-col-gutter-md">
-        <div class="col-12">
+        <div class="col-6">
             <q-input
-                label="От"
+                v-model.trim.number="min"
                 standout="bg-primary text-white"
-                clearable
                 type="number"
+                clearable
                 :readonly="props.loading"
-                :model-value="props.modelValue.from"
-                @update:model-value="(value) => updateModelValue(value, 'from')"
+                label="Мин."
+                @clear="() => min = undefined"
             />
         </div>
-        <div class="col-12">
+        <div class="col-6">
             <q-input
-                label="До"
+                v-model.trim.number="max"
                 standout="bg-primary text-white"
-                clearable
                 type="number"
+                clearable
                 :readonly="props.loading"
-                :model-value="props.modelValue.to"
-                @update:model-value="(value) => updateModelValue(value, 'to')"
+                label="Макс."
+                @clear="() => max = undefined"
             />
         </div>
     </div>
 </template>
 
-
 <script lang="ts" setup>
-export type Price = {
-    from?: number;
-    to?: number;
+export type PriceRange = {
+    min: number | undefined;
+    max: number | undefined;
 };
 
 export type Props = {
     loading?: boolean;
-    modelValue?: Price;
+    modelValue?: PriceRange;
 };
 
 export type Emits = {
-    (e: 'update:modelValue', price: Price): void;
+    (e: 'update:modelValue', price: PriceRange): void;
 };
 
+const emits = defineEmits<Emits>();
 const props = withDefaults(defineProps<Props>(), {
     modelValue: () => ({
-        from: undefined,
-        to: undefined,
+        min: undefined,
+        max: undefined,
     }),
     loading: false,
 });
 
-const emits = defineEmits<Emits>();
+const min = ref<number | undefined>(props.modelValue.min);
+const max = ref<number | undefined>(props.modelValue.max);
 
-const updateModelValue = (value: string | number | null, type: 'from' | 'to'): void => {
-    if (value) {
-        let possibleNumber: number | undefined = Number(value);
-
-        if (isNaN(possibleNumber)) {
-            possibleNumber = undefined;
-        }
-
-        emits('update:modelValue', {
-            ...props.modelValue,
-            [type]: possibleNumber,
-        });
-    } else {
-        emits('update:modelValue', {
-            ...props.modelValue,
-            [type]: undefined,
+watch([min, max], ([newMin, newMax]) => {
+    if ((newMin && newMax) && newMin > newMax) {
+        nextTick(() => {
+            min.value = newMax;
         });
     }
-};
+    
+    emits('update:modelValue', {
+        min: newMin,
+        max: newMax,
+    });
+}, {
+    immediate: true,
+});
+
+watch(() => props.modelValue, (newModelValue) => {
+    min.value = newModelValue.min;
+    max.value = newModelValue.max;
+});
 </script>
