@@ -12,28 +12,29 @@ export type Product = {
 export type FetchAllParameters = {
     query: {
         query: string | undefined;
-        sources: string[];
-        categories: string[];
+        sources: string[] | string | undefined;
+        categories: string[] | string | undefined;
         price: {
-            from: number | undefined;
-            to: number | undefined;
+            min: number | undefined;
+            max: number | undefined;
         };
     };
 };
 
 export default function () {
     const { public: publicConfig } = useRuntimeConfig();
+    const { wrap } = useArray();
 
     const fetchAll = (params: FetchAllParameters): Promise<Product[]> => {
         return $fetch<Product[]>('/search', {
             baseURL: publicConfig.api.baseUrl || 'http://localhost',
             params: {
                 product: params.query.query,
-                sources: params.query.sources,
-                categories: params.query.categories,
+                sources: wrap<string, undefined>(params.query.sources, undefined),
+                categories: wrap<string, undefined>(params.query.categories, undefined),
                 price: {
-                    from: params.query.price.from,
-                    to: params.query.price.to,
+                    min: params.query.price.min,
+                    max: params.query.price.max,
                 },
             },
             onRequest: (ctx) => {
