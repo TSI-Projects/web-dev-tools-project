@@ -1,5 +1,7 @@
 package module
 
+const ()
+
 type Post struct {
 	Description string   `json:"description"`
 	Price       string   `json:"price"`
@@ -27,10 +29,14 @@ type Response struct {
 	*Post        `json:"post,omitempty"`
 }
 
-type Request struct {
-	Category     []string `json:"category"`
-	Source       []string `json:"source"`
-	PriceMax     uint32   `json:"price_max"`
-	PriceMin     uint32   `json:"price_min"`
-	SearchedItem string   `json:"searched_item"`
+type URLParams struct {
+	*Filter
+	SearchedItem string `schema:"product"`
+}
+
+type Filter struct {
+	Sources  []string `schema:"source,omitempty"`
+	Category []string `schema:"category,omitempty"`
+	PriceMax uint32   `schema:"price_max,omitempty"`
+	PriceMin uint32   `schema:"price_min,omitempty"`
 }
