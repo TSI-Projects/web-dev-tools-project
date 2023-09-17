@@ -83,15 +83,25 @@
 
 <script lang="ts" setup>
 import { mdiFilter, mdiUpdate } from '@quasar/extras/mdi-v7';
-import { Price } from './PriceRange.vue';
+import { PriceRange } from './PriceRange.vue';
+
+export type FilterFields = {
+    query: string | undefined;
+    categories: string[] | string | undefined;
+    sources: string[] | string | undefined;
+    price: {
+        min: number | undefined;
+        max: number | undefined;
+    },
+};
 
 export type Props = {
-    modelValue: ParsedQuery;
+    modelValue: FilterFields;
     loading?: boolean;
 };
 
 export type Emits = {
-    (e: 'update:modelValue', modelValue: ParsedQuery): void;
+    (e: 'update:modelValue', modelValue: FilterFields): void;
 };
 
 const emits = defineEmits<Emits>();
