@@ -1,6 +1,6 @@
 <template>
     <q-drawer
-        v-model="drawer"
+        v-model="drawerState"
         elevated
         show-if-above
         no-swipe-open
@@ -114,7 +114,7 @@ const sources = ref<string[] | string | undefined>(props.modelValue.sources);
 const categories = ref<string[] | string | undefined>(props.modelValue.categories);
 const price = ref<PriceRange>({ min: props.modelValue.price.min, max: props.modelValue.price.max });
 
-const drawer = ref();
+const drawerState = useFilterDrawerState();
 
 const applyFilters = () => {
     emits('update:modelValue', {
