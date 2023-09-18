@@ -21,11 +21,11 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const $q = useQuasar();
-//const $productsFilter = useProductsFilter();
+const filterDrawerState = useFilterDrawerState();
 
 const shouldBeShown = computed(() => $q.screen.width <= props.breakpoint);
 
 const showDrawer = () => {
-    //$productsFilter.sharedState.value = true;
+    filterDrawerState.value = true;
 };
 </script>
