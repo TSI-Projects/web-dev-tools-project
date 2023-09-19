@@ -12,7 +12,7 @@
         <q-img :src="props.previewImg" />
         <q-card-section>
             <div
-                class="text-body1 text-weight-bold line--clamp"
+                class="text-body1 text-weight-bold line-clamp"
                 style="--line-clamp: 1;"
             >
                 {{ props.title }}
@@ -21,7 +21,7 @@
                 </q-tooltip>
             </div>
             <div
-                class="text-subtitle2 line--clamp"
+                class="text-subtitle2 line-clamp"
                 style="--line-clamp: 2;"
             >
                 {{ props.description }}
