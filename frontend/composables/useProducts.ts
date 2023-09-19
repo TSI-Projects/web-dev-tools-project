@@ -1,3 +1,5 @@
+import qs from 'qs';
+
 export type Product = {
     id: string;
     title: string;
@@ -5,20 +7,50 @@ export type Product = {
     description: string;
     price: string;
     url: string;
-}
+};
 
-export type FetchAllOptions = {
-    query: string | undefined | Ref<string | undefined>;
-}
+export type FetchAllParameters = {
+    query: {
+        query: string | undefined;
+        sources: string[] | string | undefined;
+        categories: string[] | string | undefined;
+        price: {
+            min: number | undefined;
+            max: number | undefined;
+        };
+    };
+};
 
 export default function () {
     const { public: publicConfig } = useRuntimeConfig();
+    const { wrap } = useArray();
 
-    const fetchAll = (options: FetchAllOptions) => {
-        return useFetch<Product[]>('/search', {
+    const fetchAll = (params: FetchAllParameters): Promise<Product[]> => {
+        return $fetch<Product[]>('/search', {
             baseURL: publicConfig.api.baseUrl || 'http://localhost',
             params: {
-                product: options.query || 'rtx 3060',
+                product: params.query.query,
+                sources: wrap<string, undefined>(params.query.sources, undefined),
+                categories: wrap<string, undefined>(params.query.categories, undefined),
+                price: {
+                    min: params.query.price.min,
+                    max: params.query.price.max,
+                },
+            },
+            onRequest: (ctx) => {
+                if (ctx.options.params || ctx.options.query) {
+                    ctx.request = ctx.request + qs.stringify({
+                        ...ctx.options.query,
+                        ...ctx.options.params,
+                    }, {
+                        arrayFormat: 'brackets',
+                        addQueryPrefix: true,
+                        skipNulls: true,
+                    });
+
+                    ctx.options.params = undefined;
+                    ctx.options.query = undefined;
+                }
             },
             headers: {
                 'accept': 'application/json',
@@ -35,7 +67,7 @@ export default function () {
     };
 
     return {
-        paginate: fetchAll,
-        find: fetchOne,
+        fetchAll,
+        fetchOne,
     };
 }

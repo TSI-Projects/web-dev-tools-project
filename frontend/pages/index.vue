@@ -1,21 +1,11 @@
 <template>
     <q-page padding>
         <div class="column q-col-gutter-md">
-            <div class="col-auto">
-                <div class="row justify-center">
-                    <div class="col-12 col-xl-5 col-lg-5 col-md-6 col-sm-12">
-                        <product-search-input
-                            v-model="query"
-                            :loading="status === 'pending'"
-                        />
-                    </div>
-                </div>
-            </div>
             <template v-if="status === 'success'">
                 <div class="col-auto">
                     <product-title
                         :count="0"
-                        :has-query="!!query"
+                        :has-query="!!parsedQuery.query"
                     />
                 </div>
                 <div class="col-auto">
@@ -50,7 +40,7 @@
                                 <template #action>
                                     <q-btn
                                         flat
-                                        @click="refresh()"
+                                        @click="() => refresh()"
                                     >
                                         <q-icon
                                             left
@@ -73,21 +63,34 @@
                 </div>
             </template>
         </div>
+        <!-- TELEPORT -->
+        <client-only>
+            <teleport to="#q-page-container">
+                <q-page-sticky
+                    id="q-page-sticky"
+                    position="bottom-right"
+                    :offset="[16, 16]"
+                >
+                    <product-filter-fab />
+                </q-page-sticky>
+            </teleport>
+            <teleport to="#q-layout">
+                <product-filter-drawer
+                    v-model="parsedQuery"
+                    :loading="status === 'pending'"
+                />
+            </teleport>
+        </client-only>
     </q-page>
 </template>
 
 <script lang="ts" setup>
 import { mdiAlertDecagram, mdiReload } from '@quasar/extras/mdi-v7';
+import { FilterFields } from '~/components/Product/Filter/Drawer.vue';
 
-const router = useRouter();
 const route = useRoute();
+const router = useRouter();
 const products = useProducts();
-
-const query = ref(route.query?.query as string | undefined);
-
-const { data: result, status, refresh } = await products.paginate({
-    query,
-});
 
 const navigateToProduct = (url: string) => {
     router.push({
@@ -98,12 +101,43 @@ const navigateToProduct = (url: string) => {
     });
 };
 
-watch(query, (value) => {
-    router.push({
-        name: 'index',
-        query: {
-            query: value,
+const parsedQuery = computed<FilterFields>({
+    get: () => {
+        return {
+            query: route.query.query as string | undefined,
+            sources: route.query.sources as string[] | string | undefined,
+            categories: route.query.categories as string[] | string | undefined,
+            price: {
+                /* @ts-ignore */
+                min: route.query.price?.min as number | undefined,
+                /* @ts-ignore */
+                max: route.query.price?.max as number | undefined,
+            },
+        }
+    },
+    set: (newValue) => {
+        router.push({
+            name: 'index',
+            /* @ts-ignore */
+            query: {
+                ...route.query,
+                ...newValue,
+            },
+        });
+    },
+});
+
+const { data: result, status, refresh } = useAsyncData('products', () => products.fetchAll({
+    query: {
+        query: parsedQuery.value.query,
+        sources: parsedQuery.value.sources,
+        categories: parsedQuery.value.categories,
+        price: {
+            min: parsedQuery.value.price.min,
+            max: parsedQuery.value.price.max,
         },
-    });
+    },
+}), {
+    watch: [parsedQuery],
 });
 </script>

@@ -1,5 +1,8 @@
 <template>
-    <q-layout view="lHh LpR fff">
+    <q-layout
+        id="q-layout"
+        view="lHh LpR fff"
+    >
         <q-header
             elevated
             class="bg-primary text-white"
@@ -10,8 +13,8 @@
                 </q-toolbar-title>
             </q-toolbar>
         </q-header>
-        
-        <q-page-container>
+
+        <q-page-container id="q-page-container">
             <slot />
         </q-page-container>
 

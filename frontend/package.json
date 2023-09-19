@@ -11,15 +11,16 @@
     "devDependencies": {
         "@nuxt/devtools": "latest",
         "@nuxt/eslint-config": "^0.2.0",
-        "@types/node": "^20.6.0",
+        "@types/qs": "^6.9.8",
         "eslint": "^8.49.0",
-        "nuxt": "^3.7.1",
+        "nuxt": "^3.7.3",
         "nuxt-quasar-ui": "^2.0.5",
-        "sass": "^1.66.1",
+        "sass": "^1.67.0",
         "typescript": "^5.2.2"
     },
     "dependencies": {
         "@quasar/extras": "^1.16.6",
-        "quasar": "^2.12.6"
+        "qs": "^6.11.2",
+        "quasar": "^2.12.7"
     }
 }
