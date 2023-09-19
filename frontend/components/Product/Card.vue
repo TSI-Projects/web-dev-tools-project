@@ -34,17 +34,20 @@
 </template>
 
 <script lang="ts" setup>
-const props = defineProps<{
+export type Props = {
     previewImg: string;
     title: string;
     description: string;
     price: string;
     url: string;
-}>();
+};
 
-const emits = defineEmits<{
+export type Emits = {
     (e: 'navigate', url: string): void,
-}>();
+};
+
+const emits = defineEmits<Emits>();
+const props = defineProps<Props>();
 
 const navigateToProduct = () => {
     emits('navigate', props.url);

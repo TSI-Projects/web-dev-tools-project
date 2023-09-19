@@ -12,10 +12,12 @@
 </template>
 
 <script lang="ts" setup>
-const props = withDefaults(defineProps<{
+export type Props = {
     count?: number;
     hasQuery?: boolean;
-}>(), {
+}
+
+const props = withDefaults(defineProps<Props>(), {
     count: 0,
     hasQuery: false,
 });
