@@ -20,10 +20,10 @@ const props = withDefaults(defineProps<Props>(), {
     breakpoint: 1023,
 });
 
-const $q = useQuasar();
+const quasar = useQuasar();
 const filterDrawerState = useFilterDrawerState();
 
-const shouldBeShown = computed(() => $q.screen.width <= props.breakpoint);
+const shouldBeShown = computed(() => quasar.screen.width <= props.breakpoint);
 
 const showDrawer = () => {
     filterDrawerState.value = true;
