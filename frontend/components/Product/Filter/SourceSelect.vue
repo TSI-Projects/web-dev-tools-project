@@ -35,12 +35,11 @@ export type Emits = {
     (e: 'update:modelValue', modelValue: string[]): void;
 };
 
+const emits = defineEmits<Emits>();
 const props = withDefaults(defineProps<Props>(), {
     modelValue: undefined,
     loading: false,
 });
-
-const emits = defineEmits<Emits>();
 
 // TODO: add more options
 const options: Option[] = [
