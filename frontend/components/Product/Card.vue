@@ -53,12 +53,3 @@ const navigateToProduct = () => {
     emits('navigate', props.url);
 };
 </script>
-
-<style lang="scss" scoped>
-.line--clamp {
-    overflow: hidden;
-    display: -webkit-box;
-    -webkit-line-clamp: var(--line-clamp, 2);
-    -webkit-box-orient: vertical;
-}
-</style>
