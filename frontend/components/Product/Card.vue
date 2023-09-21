@@ -12,7 +12,7 @@
         <q-img :src="props.previewImg" />
         <q-card-section>
             <div
-                class="text-body1 text-weight-bold line--clamp"
+                class="text-body1 text-weight-bold line-clamp"
                 style="--line-clamp: 1;"
             >
                 {{ props.title }}
@@ -21,7 +21,7 @@
                 </q-tooltip>
             </div>
             <div
-                class="text-subtitle2 line--clamp"
+                class="text-subtitle2 line-clamp"
                 style="--line-clamp: 2;"
             >
                 {{ props.description }}
@@ -34,28 +34,22 @@
 </template>
 
 <script lang="ts" setup>
-const props = defineProps<{
+export type Props = {
     previewImg: string;
     title: string;
     description: string;
     price: string;
     url: string;
-}>();
+};
 
-const emits = defineEmits<{
+export type Emits = {
     (e: 'navigate', url: string): void,
-}>();
+};
+
+const emits = defineEmits<Emits>();
+const props = defineProps<Props>();
 
 const navigateToProduct = () => {
     emits('navigate', props.url);
 };
 </script>
-
-<style lang="scss" scoped>
-.line--clamp {
-    overflow: hidden;
-    display: -webkit-box;
-    -webkit-line-clamp: var(--line-clamp, 2);
-    -webkit-box-orient: vertical;
-}
-</style>

@@ -11,9 +11,11 @@
         overflow-x: hidden;
         overflow-y: auto;
     }
+}
 
-    &__append
-    {
-        // ...
-    }
+.line-clamp {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: var(--line-clamp, 2);
+    -webkit-box-orient: vertical;
 }

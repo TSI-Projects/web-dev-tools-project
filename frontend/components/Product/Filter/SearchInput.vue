@@ -20,14 +20,17 @@
 <script lang="ts" setup>
 import { mdiMagnify } from '@quasar/extras/mdi-v7';
 
-const emits = defineEmits<{
-    (e: 'update:modelValue', query?: string): void;
-}>();
-
-const props = withDefaults(defineProps<{
+export type Props = {
     modelValue?: string;
     loading?: boolean;
-}>(), {
+};
+
+export type Emits = {
+    (e: 'update:modelValue', query?: string): void;
+};
+
+const emits = defineEmits<Emits>();
+const props = withDefaults(defineProps<Props>(), {
     modelValue: undefined,
     loading: false,
 });
