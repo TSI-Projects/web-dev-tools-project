@@ -7,6 +7,7 @@ import (
 
 	"github.com/AndrejsPon00/web-dev-tools/backend/module"
 	"github.com/gocolly/colly/v2"
+	log "github.com/sirupsen/logrus"
 )
 
 const (
@@ -15,11 +16,11 @@ const (
 	POSTS_IN_ONE_PAGE = 26
 )
 
-func ScrapPosts(input string, wg *sync.WaitGroup, c *colly.Collector, result chan *module.PreviewPost) {
+func ScrapPosts(input string, wg *sync.WaitGroup, c *colly.Collector, result chan *module.PreviewPost, errorChan chan error) {
 	defer wg.Done()
 	encodedQuery := encodeStringToHTML(input)
 	completeURL := combineURL(BASE_SS_URL, encodedQuery)
-
+	log.Println("hello world")
 	c.OnHTML("tr:has(td.msga2):has(td.msg2):has(td.msga2-o.pp6)", func(e *colly.HTMLElement) {
 		url := fmt.Sprintf("%s%s", BASE_SS_URL, e.ChildAttr("a", "href"))
 		previewImage := e.ChildAttr("img", "src")
@@ -42,6 +43,11 @@ func ScrapPosts(input string, wg *sync.WaitGroup, c *colly.Collector, result cha
 
 	c.OnRequest(func(r *colly.Request) {
 		fmt.Println("Visiting", r.URL.String())
+	})
+
+	c.OnError(func(response *colly.Response, err error) {
+		log.Errorf("Error scraping. With response: %v Error: %v. ", response, err)
+		errorChan <- err
 	})
 	c.Visit(completeURL)
 	c.Wait()
