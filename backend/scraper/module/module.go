@@ -1,6 +1,11 @@
 package module
 
-const ()
+const (
+	SOURCE_SS_LV    = "ss"
+	SOURCE_PP_LV    = "pp"
+	SOURCE_FACEBOOK = "facebook"
+	SOURCE_GELIOS   = "gelios"
+)
 
 type Post struct {
 	Description string   `json:"description"`

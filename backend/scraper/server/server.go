@@ -31,10 +31,16 @@ func productHandler(w http.ResponseWriter, r *http.Request) {
 	handler.SetWriter(w)
 	handler.SetSearchedProduct(params.SearchedItem)
 	handler.SetFilter(filter)
+
+	handler.GetScraper().WG.Add(1)
+	go handler.GetScraper().ScrapPosts()
+
 	handler.AddWaitGroup(2)
 	go handler.SetupErrorChannel()
 	go handler.SetupResultChannel()
 
+	handler.Wait()
+	handler.Clear()
 }
 
 func newFilter(params *module.URLParams) *module.Filter {
