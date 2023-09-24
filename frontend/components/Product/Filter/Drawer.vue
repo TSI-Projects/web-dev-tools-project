@@ -57,9 +57,8 @@
             <q-separator />
             <div class="q-pa-sm">
                 <div class="row q-col-gutter-sm">
-                    <div class="col-2">
+                    <div class="col-auto">
                         <q-btn
-                            class="full-width"
                             :icon="mdiUpdate"
                             :disable="loading"
                             color="accent"
@@ -73,7 +72,7 @@
                             </q-tooltip>
                         </q-btn>
                     </div>
-                    <div class="col-10">
+                    <div class="col-grow">
                         <q-btn
                             class="full-width"
                             label="Применить"
