@@ -6,7 +6,9 @@
         <app-header />
 
         <q-page-container id="q-page-container">
-            <slot />
+            <q-page padding>
+                <slot />
+            </q-page>
         </q-page-container>
 
         <app-footer />
