@@ -3,16 +3,7 @@
         id="q-layout"
         view="lHh LpR ffr"
     >
-        <q-header
-            elevated
-            class="bg-primary text-white"
-        >
-            <q-toolbar>
-                <q-toolbar-title>
-                    Header
-                </q-toolbar-title>
-            </q-toolbar>
-        </q-header>
+        <app-header />
 
         <q-page-container id="q-page-container">
             <slot />
