@@ -19,3 +19,17 @@
     -webkit-line-clamp: var(--line-clamp, 2);
     -webkit-box-orient: vertical;
 }
+
+body {
+    background-image: url(/images/background.svg) !important;
+    background-repeat: repeat !important;
+    background-position: 24px -24px !important;
+
+    &.body--dark {
+        background-image: url(/images/background-light.svg) !important;
+    }
+
+    &.body--light {
+        background-image: url(/images/background-dark.svg) !important;
+    }
+}
