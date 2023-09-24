@@ -18,11 +18,6 @@
             <slot />
         </q-page-container>
 
-        <q-footer
-            elevated
-            class="bg-primary text-white"
-        >
-            Footer
-        </q-footer>
+        <app-footer />
     </q-layout>
 </template>
