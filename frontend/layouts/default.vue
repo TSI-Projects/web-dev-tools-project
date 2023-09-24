@@ -1,7 +1,7 @@
 <template>
     <q-layout
         id="q-layout"
-        view="lHh LpR fff"
+        view="lHh LpR ffr"
     >
         <q-header
             elevated
