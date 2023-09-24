@@ -1,87 +1,84 @@
 <template>
-    <q-page padding>
-        <div class="column q-col-gutter-md">
-            <template v-if="status === 'success'">
-                <div class="col-auto">
-                    <product-title
-                        :count="0"
-                        :has-query="!!parsedQuery.query"
-                    />
-                </div>
-                <div class="col-auto">
-                    <div class="row q-col-gutter-md">
-                        <div
-                            v-for="product in result"
-                            class="col-6 col-xl-2 col-lg-2 col-md-3 col-sm-4"
-                        >
-                            <product-card
-                                :title="product.title"
-                                :description="product.description"
-                                :price="product.price"
-                                :preview-img="product.preview_img"
-                                :url="product.url"
-                                @navigate="navigateToProduct"
-                            />
-                        </div>
-                    </div>
-                </div>
-            </template>
-            <template v-else-if="status === 'error'">
-                <div class="col-auto">
-                    <div class="row justify-center">
-                        <div class="col-12 col-xl-6 col-lg-6 col-md-6 col-sm-12">
-                            <q-banner
-                                class="text-white bg-red-10 shadow-2"
-                                rounded
-                            >
-                                <template #avatar>
-                                    <q-icon :name="mdiAlertDecagram" />
-                                </template>
-                                <template #action>
-                                    <q-btn
-                                        flat
-                                        @click="() => refresh()"
-                                    >
-                                        <q-icon
-                                            left
-                                            :name="mdiReload"
-                                        /> Повторить
-                                    </q-btn>
-                                </template>
-                                Ошибка загрузки данных с сервера.
-                            </q-banner>
-                        </div>
-                    </div>
-                </div>
-            </template>
-            <template v-else-if="status === 'pending'">
-                <div class="col-auto self-center">
-                    <q-spinner-grid
-                        color="primary"
-                        size="128px"
-                    />
-                </div>
-            </template>
-        </div>
-        <!-- TELEPORT -->
-        <client-only>
-            <teleport to="#q-page-container">
-                <q-page-sticky
-                    id="q-page-sticky"
-                    position="bottom-right"
-                    :offset="[16, 16]"
-                >
-                    <product-filter-fab />
-                </q-page-sticky>
-            </teleport>
-            <teleport to="#q-layout">
-                <product-filter-drawer
-                    v-model="parsedQuery"
-                    :loading="status === 'pending'"
+    <div class="column q-col-gutter-md">
+        <template v-if="status === 'success'">
+            <div class="col-auto">
+                <product-title
+                    :count="0"
+                    :has-query="!!parsedQuery.query"
                 />
-            </teleport>
-        </client-only>
-    </q-page>
+            </div>
+            <div class="col-auto">
+                <div class="row q-col-gutter-md">
+                    <div
+                        v-for="product in result"
+                        class="col-6 col-xl-2 col-lg-2 col-md-3 col-sm-4"
+                    >
+                        <product-card
+                            :title="product.title"
+                            :description="product.description"
+                            :price="product.price"
+                            :preview-img="product.preview_img"
+                            :url="product.url"
+                            @navigate="navigateToProduct"
+                        />
+                    </div>
+                </div>
+            </div>
+        </template>
+        <template v-else-if="status === 'error'">
+            <div class="col-auto">
+                <div class="row justify-center">
+                    <div class="col-12 col-xl-6 col-lg-6 col-md-6 col-sm-12">
+                        <q-banner
+                            class="text-white bg-red-10 shadow-2"
+                            rounded
+                        >
+                            <template #avatar>
+                                <q-icon :name="mdiAlertDecagram" />
+                            </template>
+                            <template #action>
+                                <q-btn
+                                    flat
+                                    @click="() => refresh()"
+                                >
+                                    <q-icon
+                                        left
+                                        :name="mdiReload"
+                                    /> Повторить
+                                </q-btn>
+                            </template>
+                            Ошибка загрузки данных с сервера.
+                        </q-banner>
+                    </div>
+                </div>
+            </div>
+        </template>
+        <template v-else-if="status === 'pending'">
+            <div class="col-auto self-center">
+                <q-spinner-grid
+                    color="primary"
+                    size="128px"
+                />
+            </div>
+        </template>
+    </div>
+    <client-only>
+        <teleport to="#q-page-container">
+            <q-page-sticky
+                id="q-page-sticky"
+                position="bottom-right"
+                :offset="[16, 16]"
+            >
+                <product-filter-fab />
+            </q-page-sticky>
+        </teleport>
+        <teleport to="#q-layout">
+            <product-filter-drawer
+                v-model="parsedQuery"
+                :loading="status === 'pending'"
+            />
+        </teleport>
+    </client-only>
 </template>
 
 <script lang="ts" setup>

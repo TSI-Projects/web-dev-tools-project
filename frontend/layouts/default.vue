@@ -1,28 +1,16 @@
 <template>
     <q-layout
         id="q-layout"
-        view="lHh LpR fff"
+        view="lHh LpR ffr"
     >
-        <q-header
-            elevated
-            class="bg-primary text-white"
-        >
-            <q-toolbar>
-                <q-toolbar-title>
-                    Header
-                </q-toolbar-title>
-            </q-toolbar>
-        </q-header>
+        <app-header />
 
         <q-page-container id="q-page-container">
-            <slot />
+            <q-page padding>
+                <slot />
+            </q-page>
         </q-page-container>
 
-        <q-footer
-            elevated
-            class="bg-primary text-white"
-        >
-            Footer
-        </q-footer>
+        <app-footer />
     </q-layout>
 </template>

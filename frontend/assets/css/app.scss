@@ -19,3 +19,30 @@
     -webkit-line-clamp: var(--line-clamp, 2);
     -webkit-box-orient: vertical;
 }
+
+body {
+    background-position: 24px -24px !important;
+
+    &.body--dark {
+        background-image: url(/images/background-light.svg) !important;
+    }
+
+    &.body--light {
+        background-image: url(/images/background-dark.svg) !important;
+    }
+}
+
+.q-header {
+    background-image: url(/images/waves.svg) !important;
+    background-color: var(--q-primary);
+}
+
+.footer__top,
+.footer__bottom {
+    background-image: url(/images/waves.svg) !important;
+    background-color: var(--q-primary);
+}
+
+.footer__bottom {
+    background-color: rgba(0, 0, 0, .15);
+}
