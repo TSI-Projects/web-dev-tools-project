@@ -64,7 +64,14 @@
                             :disable="loading"
                             color="accent"
                             @click.passive="clearFilters"
-                        />
+                        >
+                            <q-tooltip
+                                anchor="top middle"
+                                self="bottom middle"
+                            >
+                                Сбросить
+                            </q-tooltip>
+                        </q-btn>
                     </div>
                     <div class="col-10">
                         <q-btn
