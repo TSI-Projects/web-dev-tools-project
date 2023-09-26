@@ -7,6 +7,8 @@
             <q-toolbar-title>
                 {{ appName }}
             </q-toolbar-title>
+            <q-space />
+            <app-dark-mode-switcher />
         </q-toolbar>
     </q-header>
 </template>
