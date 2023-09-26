@@ -16,6 +16,7 @@ export default defineNuxtConfig({
             'Dialog',
             'Dark',
             'Screen',
+            'Cookies',
         ],
         sassVariables: '@/assets/css/quasar.variables.scss',
     },
