@@ -77,6 +77,7 @@
 
 <script lang="ts" setup>
 import { mdiAlertDecagram, mdiReload } from '@quasar/extras/mdi-v7';
+import { QInfiniteScroll } from 'quasar';
 import { FilterFields } from '~/components/Product/Filter/Drawer.vue';
 
 const route = useRoute();
@@ -118,7 +119,7 @@ const parsedQuery = computed<FilterFields>({
     },
 });
 
-const { data: result, status, refresh } = useAsyncData('products', () => products.fetchAll({
+const { products: result, error, pending, close: sseClose, execute: sseExecute } = products.sseFetch({
     query: {
         query: parsedQuery.value.query,
         sources: parsedQuery.value.sources,
@@ -128,7 +129,13 @@ const { data: result, status, refresh } = useAsyncData('products', () => product
             max: parsedQuery.value.price.max,
         },
     },
-}), {
-    watch: [parsedQuery],
 });
+
+watch(parsedQuery, () => sseExecute());
+
+const onLoad: QInfiniteScroll['onLoad'] = (_, done) => {
+    sseExecute(() => done());
+};
+
+onBeforeUnmount(() => sseClose());
 </script>
