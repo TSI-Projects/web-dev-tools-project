@@ -2,7 +2,7 @@
     <div>
         <q-infinite-scroll
             :offset="250"
-            :disable="error"
+            :disable="error || eof"
             @load="onLoad"
         >
             <div class="row q-col-gutter-md">
@@ -119,7 +119,7 @@ const parsedQuery = computed<FilterFields>({
     },
 });
 
-const { products: result, error, pending, close: sseClose, execute: sseExecute } = products.sseFetch({
+const { products: result, error, pending, eof, close: sseClose, execute: sseExecute } = products.sseFetch({
     query: {
         query: parsedQuery.value.query,
         sources: parsedQuery.value.sources,

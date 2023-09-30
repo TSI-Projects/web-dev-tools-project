@@ -25,6 +25,7 @@ export type SseFetchResult = {
     products: Ref<Product[] | undefined>;
     error: Ref<boolean>;
     pending: Ref<boolean>;
+    eof: Ref<boolean>;
     execute: (done?: () => void) => void;
     close: () => void;
 };
@@ -36,6 +37,7 @@ export default function () {
     const sseFetch = (params: FetchAllParameters): SseFetchResult => {
         const pending = ref<boolean>(false);
         const error = ref<boolean>(false);
+        const eof = ref<boolean>(false);
         const products = ref<Product[]>();
         
         // EventSource object does not exists on server,
@@ -43,8 +45,9 @@ export default function () {
         if (process.server) {
             return {
                 products,
-                pending,
                 error,
+                pending,
+                eof,
                 execute: () => { },
                 close: () => { },
             };
@@ -79,10 +82,20 @@ export default function () {
             
             error.value = false;
             pending.value = true;
+            eof.value = false;
 
             // listeners
             es.addEventListener('message', (e) => {
                 const newData = JSON.parse(e.data) as Product[];
+
+                if (newData.length === 0) {
+                    es.close();
+
+                    eof.value = true;
+                    pending.value = false;
+
+                    return;
+                }
 
                 if (products.value) {
                     products.value = [...products.value, ...newData];
@@ -126,8 +139,9 @@ export default function () {
 
         return {
             products,
-            pending,
             error,
+            pending,
+            eof,
             execute,
             close,
         };
