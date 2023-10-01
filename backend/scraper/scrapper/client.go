@@ -5,6 +5,7 @@ import (
 	"sync"
 
 	"github.com/AndrejsPon00/web-dev-tools/backend/module"
+	"github.com/AndrejsPon00/web-dev-tools/backend/scrapper/pp.lv"
 	"github.com/AndrejsPon00/web-dev-tools/backend/scrapper/ss.lv"
 	"github.com/gocolly/colly/v2"
 	log "github.com/sirupsen/logrus"
@@ -18,6 +19,7 @@ type Client struct {
 	Done         context.CancelFunc
 	Context      context.Context
 	SearchedItem string
+	PPCurentPage uint8
 }
 
 func (c *Client) ScrapPosts() {
@@ -32,7 +34,7 @@ func (c *Client) ScrapPosts() {
 		case module.SOURCE_GELIOS:
 			//add scrap gelios
 		case module.SOURCE_PP_LV:
-			//add scrap pp
+			go pp.ScrapPosts(c.SearchedItem, c.PPCurentPage, c.WG, c.ResultChan, c.ErrorChan)
 		default:
 			log.Errorln("Unknown source: ", source)
 			c.WG.Done()

@@ -36,7 +36,8 @@ type Response struct {
 
 type URLParams struct {
 	*Filter
-	SearchedItem string `schema:"product"`
+	SearchedItem  string `schema:"product"`
+	PPCurrentPage uint8  `schema:"pp_page"`
 }
 
 type Filter struct {

@@ -8,7 +8,7 @@ import (
 )
 
 type IHandler interface {
-	SetSearchedProduct(searchedProduct string)
+	SetSearchedProduct(searchedProduct string, ppCurentPage uint8)
 	SetFilter(f *module.Filter)
 	SetWriter(w http.ResponseWriter)
 	AddWaitGroup(amount int)

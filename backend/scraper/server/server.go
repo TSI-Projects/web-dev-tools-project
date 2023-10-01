@@ -29,7 +29,7 @@ func productHandler(w http.ResponseWriter, r *http.Request) {
 	filter := newFilter(params)
 	handler := NewHandler()
 	handler.SetWriter(w)
-	handler.SetSearchedProduct(params.SearchedItem)
+	handler.SetSearchedProduct(params.SearchedItem, params.PPCurrentPage)
 	handler.SetFilter(filter)
 
 	handler.GetScraper().WG.Add(1)
