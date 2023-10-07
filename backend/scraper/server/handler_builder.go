@@ -50,9 +50,10 @@ func NewHandler() IHandler {
 	}
 }
 
-func (h *Handler) SetSearchedProduct(searchedProduct string, ppCurentPage uint8) {
-	h.Scraper.SearchedItem = searchedProduct
-	h.Scraper.PPCurentPage = ppCurentPage
+func (h *Handler) SetSearchedProduct(params *module.URLParams) {
+	h.Scraper.SearchedItem = params.SearchedItem
+	h.Scraper.BanknoteCurrentPage = params.BanknoteCurrentPage
+	h.Scraper.PPCurentPage = params.PPCurrentPage
 }
 
 func (h *Handler) SetWriter(w http.ResponseWriter) {

@@ -5,6 +5,7 @@ import (
 	"sync"
 
 	"github.com/AndrejsPon00/web-dev-tools/backend/module"
+	"github.com/AndrejsPon00/web-dev-tools/backend/scrapper/banknote"
 	"github.com/AndrejsPon00/web-dev-tools/backend/scrapper/pp.lv"
 	"github.com/AndrejsPon00/web-dev-tools/backend/scrapper/ss.lv"
 	"github.com/gocolly/colly/v2"
@@ -19,7 +20,9 @@ type Client struct {
 	Done         context.CancelFunc
 	Context      context.Context
 	SearchedItem string
-	PPCurentPage uint8
+
+	PPCurentPage        uint8
+	BanknoteCurrentPage uint8
 }
 
 func (c *Client) ScrapPosts() {
@@ -29,6 +32,8 @@ func (c *Client) ScrapPosts() {
 		switch source {
 		case module.SOURCE_SS_LV:
 			go ss.ScrapPosts(c.SearchedItem, c.WG, collector, c.ResultChan, c.ErrorChan)
+		case module.SOURCE_BANKNOTE:
+			go banknote.ScrapPosts(c.SearchedItem, c.BanknoteCurrentPage, c.WG, c.ResultChan, c.ErrorChan)
 		case module.SOURCE_FACEBOOK:
 			//add scrap facebook
 		case module.SOURCE_GELIOS:

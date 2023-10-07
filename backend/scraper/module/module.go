@@ -5,6 +5,7 @@ const (
 	SOURCE_PP_LV    = "pp"
 	SOURCE_FACEBOOK = "facebook"
 	SOURCE_GELIOS   = "gelios"
+	SOURCE_BANKNOTE = "banknote"
 )
 
 type Post struct {
@@ -36,8 +37,9 @@ type Response struct {
 
 type URLParams struct {
 	*Filter
-	SearchedItem  string `schema:"product"`
-	PPCurrentPage uint8  `schema:"pp_page"`
+	SearchedItem        string `schema:"product"`
+	PPCurrentPage       uint8  `schema:"pp_page"`
+	BanknoteCurrentPage uint8  `schema:"banknote_page"`
 }
 
 type Filter struct {
