@@ -41,7 +41,7 @@ func ScrapPosts(input string, currentPage uint8, wg *sync.WaitGroup, c *colly.Co
 
 	c.OnHTML(".td2", func(e *colly.HTMLElement) {
 		paginationChan <- &module.Pagination{
-			Source:  module.SOURCE_SS_LV,
+			Source:  module.SOURCE_SS,
 			HasNext: hasNextPage(currentPage, e),
 		}
 	})

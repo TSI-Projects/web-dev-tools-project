@@ -1,8 +1,8 @@
 package module
 
 const (
-	SOURCE_SS_LV    = "ss"
-	SOURCE_PP_LV    = "pp"
+	SOURCE_SS       = "ss"
+	SOURCE_PP       = "pp"
 	SOURCE_FACEBOOK = "facebook"
 	SOURCE_GELIOS   = "gelios"
 	SOURCE_BANKNOTE = "banknote"

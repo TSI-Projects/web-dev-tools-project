@@ -86,7 +86,7 @@ func SendPreviewPostsToChannel(response *Response, resultChan chan *module.Previ
 
 func SendPaginationPostsToChannel(currentPage uint8, response *Response, paginationChan chan *module.Pagination) {
 	paginationChan <- &module.Pagination{
-		Source:  module.SOURCE_PP_LV,
+		Source:  module.SOURCE_PP,
 		HasNext: hasNextPage(currentPage, response),
 	}
 }
