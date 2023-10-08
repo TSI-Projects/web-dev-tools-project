@@ -63,6 +63,7 @@ Partially send posts from one page.
     title: string,
     preview_img: string,
     price: string,
+    url: string,
   },
   // ... more posts
 ]
