@@ -42,14 +42,14 @@ type Response struct {
 
 type URLParams struct {
 	*Filter
-	SearchedItem        string `schema:"product"`
+	SearchedItem        string `schema:"query"`
 	PPCurrentPage       uint8  `schema:"pp_page"`
 	SSCurrentPage       uint8  `schema:"ss_page"`
 	BanknoteCurrentPage uint8  `schema:"banknote_page"`
 }
 
 type Filter struct {
-	Sources  []string `schema:"source,omitempty"`
+	Sources  []string `schema:"sources,omitempty"`
 	Category []string `schema:"category,omitempty"`
 	PriceMax uint32   `schema:"price_max,omitempty"`
 	PriceMin uint32   `schema:"price_min,omitempty"`
