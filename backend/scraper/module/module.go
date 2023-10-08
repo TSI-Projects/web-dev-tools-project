@@ -1,8 +1,8 @@
 package module
 
 const (
-	SOURCE_SS_LV    = "ss"
-	SOURCE_PP_LV    = "pp"
+	SOURCE_SS       = "ss"
+	SOURCE_PP       = "pp"
 	SOURCE_FACEBOOK = "facebook"
 	SOURCE_GELIOS   = "gelios"
 	SOURCE_BANKNOTE = "banknote"
@@ -13,18 +13,9 @@ type Pagination struct {
 	HasNext bool   `json:"has_next"`
 }
 
-type Post struct {
-	Description string   `json:"description"`
-	Price       string   `json:"price"`
-	Id          string   `json:"id"`
-	Imgs        []string `json:"imgs"`
-}
-
 type PreviewPost struct {
-	Id           string `json:"id"`
 	Title        string `json:"title"`
 	PreviewImage string `json:"preview_img"`
-	Description  string `json:"description"`
 	Price        string `json:"price"`
 	URL          string `json:"url"`
 }
@@ -37,7 +28,6 @@ type Error struct {
 type Response struct {
 	*Error       `json:"error,omitempty"`
 	*PreviewPost `json:"preview_post,omitempty"`
-	*Post        `json:"post,omitempty"`
 }
 
 type URLParams struct {

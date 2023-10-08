@@ -76,7 +76,6 @@ func SendPreviewPostsToChannel(response *Response, resultChan chan *module.Previ
 
 		resultChan <- &module.PreviewPost{
 			Title:        item.Title,
-			Description:  item.Title,
 			URL:          item.RedirectURL,
 			PreviewImage: getPreviewImageURL(item),
 			Price:        getPrice(item),
@@ -86,7 +85,7 @@ func SendPreviewPostsToChannel(response *Response, resultChan chan *module.Previ
 
 func SendPaginationPostsToChannel(currentPage uint8, response *Response, paginationChan chan *module.Pagination) {
 	paginationChan <- &module.Pagination{
-		Source:  module.SOURCE_PP_LV,
+		Source:  module.SOURCE_PP,
 		HasNext: hasNextPage(currentPage, response),
 	}
 }

@@ -34,14 +34,13 @@ func ScrapPosts(input string, currentPage uint8, wg *sync.WaitGroup, c *colly.Co
 			URL:          url,
 			PreviewImage: previewImage,
 			Title:        title,
-			Description:  description,
 			Price:        price,
 		}
 	})
 
 	c.OnHTML(".td2", func(e *colly.HTMLElement) {
 		paginationChan <- &module.Pagination{
-			Source:  module.SOURCE_SS_LV,
+			Source:  module.SOURCE_SS,
 			HasNext: hasNextPage(currentPage, e),
 		}
 	})

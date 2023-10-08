@@ -53,7 +53,6 @@ func NewHandler() IHandler {
 			Done:           cancel,
 			Context:        ctx,
 			WG:             &sync.WaitGroup{},
-			Filter:         &module.Filter{},
 			ResultChan:     resultChan,
 			ErrorChan:      errorChan,
 			PaginationChan: paginationChan,
@@ -62,16 +61,12 @@ func NewHandler() IHandler {
 	}
 }
 
-func (h *Handler) SetSearchedProduct(params *module.URLParams) {
+func (h *Handler) SetParams(params *module.URLParams) {
 	h.Scraper.Params = params
 }
 
 func (h *Handler) SetWriter(w http.ResponseWriter) {
 	h.Writer = w
-}
-
-func (h *Handler) SetFilter(f *module.Filter) {
-	h.Scraper.Filter = f
 }
 
 func (h *Handler) SetupErrorChannel() {
