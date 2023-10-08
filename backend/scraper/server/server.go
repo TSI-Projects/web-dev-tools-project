@@ -37,6 +37,7 @@ func productHandler(w http.ResponseWriter, r *http.Request) {
 	go handler.SetupErrorChannel()
 	go handler.SetupResultChannel()
 
+	handler.GetScraper().WG.Wait()
 	handler.Wait()
 	handler.Clear()
 }
