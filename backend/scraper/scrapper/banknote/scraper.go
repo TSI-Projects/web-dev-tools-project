@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
 	"strings"
 	"sync"
@@ -20,7 +19,7 @@ const (
 	POSTS_IN_ONE_PAGE = 50
 )
 
-func ScrapPosts(input string, pageNumber uint8, wg *sync.WaitGroup, result chan *module.PreviewPost, errorChan chan error) {
+func ScrapPosts(input string, pageNumber uint8, wg *sync.WaitGroup, paginationChan chan *module.Pagination, result chan *module.PreviewPost, errorChan chan error) {
 	defer wg.Done()
 
 	url := getFullURL(input, pageNumber)
@@ -36,6 +35,7 @@ func ScrapPosts(input string, pageNumber uint8, wg *sync.WaitGroup, result chan 
 		return
 	}
 
+	SendPaginationPostsToChannel(response, paginationChan)
 	SendPreviewPostsToChannel(response, result)
 }
 
@@ -65,7 +65,6 @@ func DecodeResponse(response []byte) (*Response, error) {
 
 func SendPreviewPostsToChannel(response *Response, resultChan chan *module.PreviewPost) {
 	for _, item := range response.Items {
-		log.Println(item)
 		resultChan <- &module.PreviewPost{
 			Title:        item.Title,
 			Description:  item.Title,
@@ -74,6 +73,16 @@ func SendPreviewPostsToChannel(response *Response, resultChan chan *module.Previ
 			Price:        item.Price,
 		}
 	}
+}
+
+func SendPaginationPostsToChannel(response *Response, paginationChan chan *module.Pagination) {
+	paginationChan <- &module.Pagination{
+		Source:  module.SOURCE_BANKNOTE,
+		HasNext: hasHextPage(response),
+	}
+}
+func hasHextPage(response *Response) bool {
+	return response.NextPageURL != ""
 }
 
 func encodeSpacesForURL(query string) string {

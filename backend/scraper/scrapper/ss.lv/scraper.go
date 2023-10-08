@@ -2,6 +2,7 @@ package ss
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 	"sync"
 
@@ -11,15 +12,13 @@ import (
 )
 
 const (
-	BASE_SS_URL       = "https://www.ss.lv/"
-	BASE_SEARCH_QUERY = "ru/search-result/?q="
-	POSTS_IN_ONE_PAGE = 26
+	BASE_SS_URL = "https://www.ss.lv/ru/search-result"
 )
 
-func ScrapPosts(input string, wg *sync.WaitGroup, c *colly.Collector, result chan *module.PreviewPost, errorChan chan error) {
+func ScrapPosts(input string, currentPage uint8, wg *sync.WaitGroup, c *colly.Collector, paginationChan chan *module.Pagination, result chan *module.PreviewPost, errorChan chan error) {
 	defer wg.Done()
 	encodedQuery := encodeStringToHTML(input)
-	completeURL := combineURL(BASE_SS_URL, encodedQuery)
+	completeURL := combineURL(BASE_SS_URL, encodedQuery, currentPage)
 	c.OnHTML("tr:has(td.msga2):has(td.msg2):has(td.msga2-o.pp6)", func(e *colly.HTMLElement) {
 		url := fmt.Sprintf("%s%s", BASE_SS_URL, e.ChildAttr("a", "href"))
 		previewImage := e.ChildAttr("img", "src")
@@ -40,6 +39,13 @@ func ScrapPosts(input string, wg *sync.WaitGroup, c *colly.Collector, result cha
 		}
 	})
 
+	c.OnHTML(".td2", func(e *colly.HTMLElement) {
+		paginationChan <- &module.Pagination{
+			Source:  module.SOURCE_SS_LV,
+			HasNext: hasNextPage(currentPage, e),
+		}
+	})
+
 	c.OnRequest(func(r *colly.Request) {
 		fmt.Println("Visiting", r.URL.String())
 	})
@@ -48,12 +54,28 @@ func ScrapPosts(input string, wg *sync.WaitGroup, c *colly.Collector, result cha
 		log.Errorf("Error scraping. With response: %v Error: %v. ", response, err)
 		errorChan <- err
 	})
+
 	c.Visit(completeURL)
 	c.Wait()
 }
 
-func combineURL(baseURL, query string) string {
-	return fmt.Sprintf(baseURL + BASE_SEARCH_QUERY + query)
+func hasNextPage(currentPage uint8, e *colly.HTMLElement) bool {
+	hasNextPage := false
+	for _, page := range e.ChildTexts("a[rel='next']") {
+		uintPage, err := strconv.Atoi(page)
+		if err != nil {
+			continue
+		}
+
+		if uint8(uintPage) > currentPage {
+			hasNextPage = true
+		}
+	}
+	return hasNextPage
+}
+
+func combineURL(baseURL, query string, currentPage uint8) string {
+	return fmt.Sprintf("%s/page%d.html?q=%s", baseURL, currentPage, query)
 }
 
 func encodeStringToHTML(query string) string {
