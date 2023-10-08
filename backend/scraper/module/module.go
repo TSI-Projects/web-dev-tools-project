@@ -49,7 +49,7 @@ type URLParams struct {
 }
 
 type Filter struct {
-	Sources  []string `schema:"source,omitempty"`
+	Sources  []string `schema:"sources,omitempty"`
 	Category []string `schema:"category,omitempty"`
 	PriceMax uint32   `schema:"price_max,omitempty"`
 	PriceMin uint32   `schema:"price_min,omitempty"`
