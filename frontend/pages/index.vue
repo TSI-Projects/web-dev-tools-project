@@ -10,16 +10,16 @@
                 class="row q-col-gutter-md"
             >
                 <div
-                    v-for="product in result"
+                    v-for="post in result"
                     class="col-6 col-xl-2 col-lg-2 col-md-3 col-sm-4"
                 >
-                    <product-card
-                        :title="product.title"
-                        :description="product.description"
-                        :price="product.price"
-                        :preview-img="product.preview_img"
-                        :url="product.url"
-                        @navigate="navigateToProduct"
+                    <post-card
+                        :title="post.title"
+                        :description="post.description"
+                        :price="post.price"
+                        :preview-img="post.preview_img"
+                        :url="post.url"
+                        @navigate="navigateToPost"
                     />
                 </div>
             </div>
@@ -65,11 +65,11 @@
                     position="bottom-right"
                     :offset="[16, 16]"
                 >
-                    <product-filter-fab />
+                    <post-filter-fab />
                 </q-page-sticky>
             </teleport>
             <teleport to="#q-layout">
-                <product-filter-drawer
+                <post-filter-drawer
                     v-model="parsedQuery"
                     :loading="pending"
                 />
@@ -81,13 +81,13 @@
 <script lang="ts" setup>
 import { mdiAlertDecagram, mdiReload } from '@quasar/extras/mdi-v7';
 import { QInfiniteScroll } from 'quasar';
-import { FilterFields } from '~/components/Product/Filter/Drawer.vue';
+import { FilterFields } from '~/components/Post/Filter/Drawer.vue';
 
 const route = useRoute();
 const router = useRouter();
-const products = useProducts();
+const posts = usePosts();
 
-const navigateToProduct = (url: string) => {
+const navigateToPost = (url: string) => {
     router.push({
         name: 'products-url',
         params: {
@@ -122,7 +122,7 @@ const parsedQuery = computed<FilterFields>({
     },
 });
 
-const { products: result, error, pending, eof, close: sseClose, execute: sseExecute } = products.sseFetch({
+const { posts: result, error, pending, eof, close: sseClose, execute: sseExecute } = posts.sseFetch({
     query: {
         query: parsedQuery.value.query,
         sources: parsedQuery.value.sources,

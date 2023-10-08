@@ -1,6 +1,6 @@
 import qs from 'qs';
 
-export type Product = {
+export type Post = {
     id: string;
     title: string;
     preview_img: string;
@@ -22,7 +22,7 @@ export type FetchAllParameters = {
 };
 
 export type SseFetchResult = {
-    products: Ref<Product[]>;
+    posts: Ref<Post[]>;
     error: Ref<boolean>;
     pending: Ref<boolean>;
     eof: Ref<boolean>;
@@ -38,13 +38,13 @@ export default function () {
         const pending = ref<boolean>(false);
         const error = ref<boolean>(false);
         const eof = ref<boolean>(false);
-        const products = ref<Product[]>([]);
+        const posts = ref<Post[]>([]);
         
         // EventSource object does not exists on server,
         // so just return empty state.
         if (process.server) {
             return {
-                products,
+                posts,
                 error,
                 pending,
                 eof,
@@ -86,7 +86,7 @@ export default function () {
 
             // listeners
             es.addEventListener('message', (e) => {
-                const newData = JSON.parse(e.data) as Product[];
+                const newData = JSON.parse(e.data) as Post[];
 
                 if (newData.length === 0) {
                     es.close();
@@ -97,7 +97,7 @@ export default function () {
                     return;
                 }
                 
-                products.value = [...products.value, ...newData];
+                posts.value = [...posts.value, ...newData];
             });
 
             es.addEventListener('close', () => {
@@ -135,7 +135,7 @@ export default function () {
         };
 
         return {
-            products,
+            posts,
             error,
             pending,
             eof,
