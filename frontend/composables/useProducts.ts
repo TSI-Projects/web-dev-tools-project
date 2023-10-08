@@ -96,12 +96,8 @@ export default function () {
 
                     return;
                 }
-
-                if (products.value) {
-                    products.value = [...products.value, ...newData];
-                } else {
-                    products.value = newData;
-                }
+                
+                products.value = [...products.value, ...newData];
             });
 
             es.addEventListener('close', () => {
