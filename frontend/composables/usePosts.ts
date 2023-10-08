@@ -9,7 +9,12 @@ export type Post = {
     url: string;
 };
 
-export type FetchAllParameters = {
+export type Pagination = {
+    source: string;
+    has_next: boolean;
+};
+
+export type SseFetchParameters = () => {
     query: {
         query: string | undefined;
         sources: string[] | string | undefined;
@@ -21,25 +26,30 @@ export type FetchAllParameters = {
     };
 };
 
+export type SseFetchResultExecuteOptions = {
+    page: number;
+    resetAvailableSources: boolean;
+    onFinish?: () => void;
+};
+
 export type SseFetchResult = {
     posts: Ref<Post[]>;
     error: Ref<boolean>;
     pending: Ref<boolean>;
     eof: Ref<boolean>;
-    execute: (done?: () => void) => void;
+    execute: (options: SseFetchResultExecuteOptions) => void;
     close: () => void;
 };
 
 export default function () {
     const { public: publicConfig } = useRuntimeConfig();
-    const { wrap } = useArray();
 
-    const sseFetch = (params: FetchAllParameters): SseFetchResult => {
+    const sseFetch = (parametersResolver: SseFetchParameters): SseFetchResult => {
         const pending = ref<boolean>(false);
         const error = ref<boolean>(false);
         const eof = ref<boolean>(false);
         const posts = ref<Post[]>([]);
-        
+
         // EventSource object does not exists on server,
         // so just return empty state.
         if (process.server) {
@@ -52,31 +62,55 @@ export default function () {
                 close: () => { },
             };
         }
-
-        const baseUrl = publicConfig.api.baseUrl || 'http://localhost';
-
-        const query = qs.stringify({
-            product: params.query.query,
-            source: wrap<string, undefined>(params.query.sources, undefined),
-            categories: wrap<string, undefined>(params.query.categories, undefined),
-            price: {
-                min: params.query.price.min,
-                max: params.query.price.max,
-            },
-        }, {
-            arrayFormat: 'repeat',
-            addQueryPrefix: true,
-            skipNulls: true,
-        });
-
-        const fullUrl = `${baseUrl}/search${query}`;
-
+        
         let close: () => void = () => { };
 
-        const execute = (done?: () => void): void  => {
+        const eofSources = new Set<string>();
+
+        const execute = (options: SseFetchResultExecuteOptions): void  => {
             if (pending.value) {
                 close();
             }
+
+            if (options.resetAvailableSources) {
+                eofSources.clear();
+            }
+
+            const params = parametersResolver();
+
+            // get sources
+            const allSources = Array.from(params.query.sources || []);
+
+            const availableSources = new Set(allSources.filter((source: string) => {
+                return ! eofSources.has(source);
+            }));
+
+            // build pages
+            const pages = Object.fromEntries(
+                Array.from(availableSources).map((source) => {
+                    return [
+                        `${source}_page`,
+                        options.page,
+                    ];
+                }),
+            );
+
+            // build url
+            const fullUrl = new URL('/posts/search', publicConfig.api.baseUrl);
+            fullUrl.search = qs.stringify({
+                query: params.query.query,
+                sources: Array.from(availableSources),
+                categories: params.query.categories,
+                price: {
+                    min: params.query.price.min,
+                    max: params.query.price.max,
+                },
+                ...pages,
+            }, {
+                arrayFormat: 'repeat',
+                addQueryPrefix: true,
+                skipNulls: true,
+            });
 
             const es = new EventSource(fullUrl);
             
@@ -85,19 +119,18 @@ export default function () {
             eof.value = false;
 
             // listeners
-            es.addEventListener('message', (e) => {
+            es.addEventListener('posts', (e) => {
                 const newData = JSON.parse(e.data) as Post[];
-
-                if (newData.length === 0) {
-                    es.close();
-
-                    eof.value = true;
-                    pending.value = false;
-
-                    return;
-                }
                 
                 posts.value = [...posts.value, ...newData];
+            });
+
+            es.addEventListener('pagination', (e) => {
+                const newPagination = JSON.parse(e.data) as Pagination;
+                
+                if (! newPagination.has_next) {
+                    eofSources.add(newPagination.source);
+                }
             });
 
             es.addEventListener('close', () => {
@@ -105,9 +138,13 @@ export default function () {
                 
                 pending.value = false;
                 error.value = false;
+                
+                if (eofSources.size === allSources.length) {
+                    eof.value = true;
+                }
 
-                if (done) {
-                    done();
+                if (options.onFinish) {
+                    options.onFinish();
                 }
             });
 
@@ -117,8 +154,8 @@ export default function () {
                 error.value = true;
                 pending.value = false;
 
-                if (done) {
-                    done();
+                if (options.onFinish) {
+                    options.onFinish();
                 }
             });
 
