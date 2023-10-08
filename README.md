@@ -60,10 +60,8 @@ Partially send posts from one page.
 ```typescript
 [
   {
-    id: string,
     title: string,
     preview_img: string,
-    description: string,
     price: string,
   },
   // ... more posts
