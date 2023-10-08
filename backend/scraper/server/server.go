@@ -12,7 +12,7 @@ import (
 
 func Start() {
 	r := mux.NewRouter()
-	r.HandleFunc("/search", basicMiddleware(productHandler)).Methods(http.MethodGet)
+	r.HandleFunc("/posts/search", basicMiddleware(productHandler)).Methods(http.MethodGet)
 
 	log.Println("Server is starting...")
 	log.Fatal(http.ListenAndServe(":8080", getCORSHandler(r)))
