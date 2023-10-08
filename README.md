@@ -13,7 +13,7 @@
 If you don't have the Golang runtime installed on your system, you'll need to install it by following the installation guide in the official [Golang documentation](https://go.dev/doc/install).
 
 ## Development
-1. Go to [backend scrapper](backend/scraper) directory.
+1. Go to [backend scraper](backend/scraper) directory.
 2. Run following command start the development server:
 
 ```bash
@@ -27,39 +27,74 @@ the development server on host <http://localhost:8080>.
 <details>
 <summary>
 <code>GET</code>
-<code><b>/search</b></code>
+<code>SSE</code>
+<code><b>/posts/search</b></code>
 </summary>
 
 #### Parameters
 
 | Name | Type | In | Require |Description |
 | :--- | :--- | :--- | :--- | :--- |
-| `product` | `string` | query | * | Product name |
+| `query` | `string` | query | + | Post name to search |
+| `sources` | `string[]` | query | - | Sources to search from |
+| `pp_page` | `number` | query | - | pp.lv page number |
+| `ss_page` | `number` | query | - | ss.lv page number |
+| `facebook_page` | `number` | query | - | facebook.com page number |
+| `banknote_page` | `number` | query | - | banknote.lv page number |
 
-#### Responses
+#### Events
 
 <table>
 <tr>
-<td>Status</td>
-<td>Response</td>
+<td><b>Status</b></td>
+<td><b>Description</b></td>
+<td><b>Response</b></td>
 </tr>
 <tr>
-<td>200</td>
+<td>posts</td>
+<td>
+Partially send posts from one page.
+</td>
 <td>
 
-```json
+```typescript
 [
   {
-    "id": "h182hofa8yhr-4hiofau3-ui3o231jv",
-    "title": "Asus Expertbook",
-    "preview_img": "https://i.ss.lv/gallery/6/1120/279831/55966116.th2.jpg",
-    "description": "Pārdodu jaunu portatīvo datoru.",
-    "price": "330€"
+    id: string,
+    title: string,
+    preview_img: string,
+    description: string,
+    price: string,
   },
-  // ...
+  // ... more posts
 ]
 ```
 
+</td>
+</tr>
+<tr>
+<td>pagination</td>
+<td>
+Dispatches once after page was scarped.
+</td>
+<td>
+
+```typescript
+{
+  source: string,
+  has_next: boolean,
+}
+```
+
+</td>
+</tr>
+<tr>
+<td>close</td>
+<td>
+Dispatches when scraping was finished.
+</td>
+<td>
+Connection closed
 </td>
 </tr>
 </table>
