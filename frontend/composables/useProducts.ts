@@ -131,6 +131,7 @@ export default function () {
                 if (es && es.readyState !== es.CLOSED) {
                     es.close();
 
+                    eof.value = false;
                     error.value = false;
                     pending.value = false;
                 }
