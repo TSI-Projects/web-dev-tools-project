@@ -42,7 +42,7 @@ type Response struct {
 
 type URLParams struct {
 	*Filter
-	SearchedItem        string `schema:"product"`
+	SearchedItem        string `schema:"query"`
 	PPCurrentPage       uint8  `schema:"pp_page"`
 	SSCurrentPage       uint8  `schema:"ss_page"`
 	BanknoteCurrentPage uint8  `schema:"banknote_page"`
