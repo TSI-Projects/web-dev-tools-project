@@ -3,7 +3,7 @@
         v-ripple
         class="q-hoverable cursor-pointer"
         href="http://localhost"
-        @click="navigateToProduct"
+        @click="navigateToPost"
     >
         <div
             tabindex="-1"
@@ -49,7 +49,7 @@ export type Emits = {
 const emits = defineEmits<Emits>();
 const props = defineProps<Props>();
 
-const navigateToProduct = () => {
+const navigateToPost = () => {
     emits('navigate', props.url);
 };
 </script>
