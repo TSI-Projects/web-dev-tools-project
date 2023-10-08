@@ -5,7 +5,10 @@
             :disable="error || eof"
             @load="onLoad"
         >
-            <div class="row q-col-gutter-md">
+            <div
+                v-if="result.length > 0"
+                class="row q-col-gutter-md"
+            >
                 <div
                     v-for="product in result"
                     class="col-6 col-xl-2 col-lg-2 col-md-3 col-sm-4"
