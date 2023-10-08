@@ -174,8 +174,7 @@ func (h *Handler) Clear() {
 }
 
 func (h *Handler) CloseSSEConnection() {
-	fmt.Fprintf(h.Writer, "event: close\ndata: Connection closed\n\n")
-	h.Writer.(http.Flusher).Flush()
+	h.SendResponse("Connection closed", Close)
 }
 
 func toByteArray(any interface{}) ([]byte, error) {
