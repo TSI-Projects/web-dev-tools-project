@@ -18,42 +18,52 @@ const (
 	POSTS_BUFFER_CAPACITY = 25
 )
 
+type ResponseType string
+
+const (
+	Close      ResponseType = "close"
+	Posts      ResponseType = "posts"
+	Pagination ResponseType = "pagination"
+)
+
 type Handler struct {
-	ErrorChan    chan error
-	ResultChan   chan *module.PreviewPost
-	Scraper      *scrapper.Client
-	WaitGroup    *sync.WaitGroup
-	Mutex        *sync.Mutex
-	TimeoutTimer *time.Timer
-	Writer       http.ResponseWriter
+	ErrorChan      chan error
+	ResultChan     chan *module.PreviewPost
+	PaginationChan chan *module.Pagination
+	Scraper        *scrapper.Client
+	WaitGroup      *sync.WaitGroup
+	Mutex          *sync.Mutex
+	TimeoutTimer   *time.Timer
+	Writer         http.ResponseWriter
 }
 
 func NewHandler() IHandler {
+	paginationChan := make(chan *module.Pagination)
 	resultChan := make(chan *module.PreviewPost)
 	errorChan := make(chan error)
 	ctx, cancel := context.WithCancel(context.Background())
 	return &Handler{
-		ErrorChan:    errorChan,
-		ResultChan:   resultChan,
-		TimeoutTimer: time.NewTimer(CONNECTION_TIMEOUT),
-		WaitGroup:    &sync.WaitGroup{},
-		Mutex:        &sync.Mutex{},
+		PaginationChan: paginationChan,
+		ErrorChan:      errorChan,
+		ResultChan:     resultChan,
+		TimeoutTimer:   time.NewTimer(CONNECTION_TIMEOUT),
+		WaitGroup:      &sync.WaitGroup{},
+		Mutex:          &sync.Mutex{},
 		Scraper: &scrapper.Client{
-			Done:         cancel,
-			Context:      ctx,
-			WG:           &sync.WaitGroup{},
-			Filter:       &module.Filter{},
-			ResultChan:   resultChan,
-			ErrorChan:    errorChan,
-			SearchedItem: "",
+			Done:           cancel,
+			Context:        ctx,
+			WG:             &sync.WaitGroup{},
+			Filter:         &module.Filter{},
+			ResultChan:     resultChan,
+			ErrorChan:      errorChan,
+			PaginationChan: paginationChan,
+			SearchedItem:   "",
 		},
 	}
 }
 
 func (h *Handler) SetSearchedProduct(params *module.URLParams) {
-	h.Scraper.SearchedItem = params.SearchedItem
-	h.Scraper.BanknoteCurrentPage = params.BanknoteCurrentPage
-	h.Scraper.PPCurentPage = params.PPCurrentPage
+	h.Scraper.Params = params
 }
 
 func (h *Handler) SetWriter(w http.ResponseWriter) {
@@ -91,7 +101,7 @@ func (h *Handler) SetupResultChannel() {
 			h.Mutex.Lock()
 			if !ok {
 				if len(buffer) > 0 {
-					h.SendResponse(buffer)
+					h.SendResponse(buffer, Posts)
 				}
 				h.Mutex.Unlock()
 				return
@@ -100,13 +110,21 @@ func (h *Handler) SetupResultChannel() {
 			if len(buffer) < POSTS_BUFFER_CAPACITY {
 				buffer = append(buffer, result)
 			} else {
-				h.SendResponse(buffer)
+				h.SendResponse(buffer, Posts)
 				buffer = buffer[:0]
 			}
 			h.Mutex.Unlock()
 
+		case pagination, ok := <-h.PaginationChan:
+			if !ok {
+				return
+			}
+			h.Mutex.Lock()
+			h.SendResponse(pagination, Pagination)
+			h.Mutex.Unlock()
+
 		case <-h.Scraper.Context.Done():
-			h.SendResponse(buffer)
+			h.SendResponse(buffer, Posts)
 			return
 
 		case <-h.TimeoutTimer.C:
@@ -117,21 +135,18 @@ func (h *Handler) SetupResultChannel() {
 	}
 }
 
-func (h *Handler) SendResponse(response interface{}) {
+func (h *Handler) SendResponse(response interface{}, resType ResponseType) {
 	posts, err := toByteArray(response)
 	if err != nil {
 		h.ErrorChan <- fmt.Errorf("services not responding. Please try again later")
 		log.Errorf("Failed to unmarshal, Result: %v: %v", response, err)
 	}
 
-	if _, err := h.Writer.Write(posts); err != nil {
+	if _, err := fmt.Fprintf(h.Writer, "event: %s\ndata: %v\n\n", resType, string(posts)); err != nil {
 		h.ErrorChan <- fmt.Errorf("failed to send response: %v", err)
 	}
 
-	if flusher, ok := h.Writer.(http.Flusher); ok {
-		flusher.Flush()
-		log.Debugln("Response flushed")
-	}
+	h.Writer.(http.Flusher).Flush()
 }
 
 func (h *Handler) GetScraper() *scrapper.Client {

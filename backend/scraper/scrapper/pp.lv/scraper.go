@@ -21,10 +21,10 @@ const (
 	POSTS_IN_ONE_PAGE = 20
 )
 
-func ScrapPosts(input string, pageNumber uint8, wg *sync.WaitGroup, result chan *module.PreviewPost, errorChan chan error) {
+func ScrapPosts(input string, currentPage uint8, wg *sync.WaitGroup, paginationChan chan *module.Pagination, result chan *module.PreviewPost, errorChan chan error) {
 	defer wg.Done()
 
-	url := getFullURL(input, pageNumber)
+	url := getFullURL(input, currentPage)
 	rawResponse, err := FetchResponse(url)
 	if err != nil {
 		errorChan <- err
@@ -36,7 +36,7 @@ func ScrapPosts(input string, pageNumber uint8, wg *sync.WaitGroup, result chan 
 		errorChan <- err
 		return
 	}
-
+	SendPaginationPostsToChannel(currentPage, response, paginationChan)
 	SendPreviewPostsToChannel(response, result)
 }
 
@@ -82,6 +82,18 @@ func SendPreviewPostsToChannel(response *Response, resultChan chan *module.Previ
 			Price:        getPrice(item),
 		}
 	}
+}
+
+func SendPaginationPostsToChannel(currentPage uint8, response *Response, paginationChan chan *module.Pagination) {
+	paginationChan <- &module.Pagination{
+		Source:  module.SOURCE_PP_LV,
+		HasNext: hasNextPage(currentPage, response),
+	}
+}
+
+func hasNextPage(currentPage uint8, response *Response) bool {
+	var totalPages float32 = float32(response.Content.ItemsCount) / POSTS_IN_ONE_PAGE
+	return totalPages > float32(currentPage)
 }
 
 func getPrice(item *Data) string {

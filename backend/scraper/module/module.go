@@ -8,6 +8,11 @@ const (
 	SOURCE_BANKNOTE = "banknote"
 )
 
+type Pagination struct {
+	Source  string `json:"source"`
+	HasNext bool   `json:"has_next"`
+}
+
 type Post struct {
 	Description string   `json:"description"`
 	Price       string   `json:"price"`
@@ -39,6 +44,7 @@ type URLParams struct {
 	*Filter
 	SearchedItem        string `schema:"product"`
 	PPCurrentPage       uint8  `schema:"pp_page"`
+	SSCurrentPage       uint8  `schema:"ss_page"`
 	BanknoteCurrentPage uint8  `schema:"banknote_page"`
 }
 
