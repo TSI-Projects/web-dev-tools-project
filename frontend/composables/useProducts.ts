@@ -22,7 +22,7 @@ export type FetchAllParameters = {
 };
 
 export type SseFetchResult = {
-    products: Ref<Product[] | undefined>;
+    products: Ref<Product[]>;
     error: Ref<boolean>;
     pending: Ref<boolean>;
     eof: Ref<boolean>;
@@ -38,7 +38,7 @@ export default function () {
         const pending = ref<boolean>(false);
         const error = ref<boolean>(false);
         const eof = ref<boolean>(false);
-        const products = ref<Product[]>();
+        const products = ref<Product[]>([]);
         
         // EventSource object does not exists on server,
         // so just return empty state.
