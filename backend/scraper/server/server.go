@@ -26,11 +26,9 @@ func productHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	filter := newFilter(params)
 	handler := NewHandler()
 	handler.SetWriter(w)
-	handler.SetSearchedProduct(params)
-	handler.SetFilter(filter)
+	handler.SetParams(params)
 
 	handler.GetScraper().WG.Add(1)
 	go handler.GetScraper().ScrapPosts()
@@ -41,15 +39,6 @@ func productHandler(w http.ResponseWriter, r *http.Request) {
 
 	handler.Wait()
 	handler.Clear()
-}
-
-func newFilter(params *module.URLParams) *module.Filter {
-	return &module.Filter{
-		PriceMax: params.PriceMax,
-		PriceMin: params.PriceMin,
-		Category: params.Category,
-		Sources:  params.Sources,
-	}
 }
 
 func basicMiddleware(next http.HandlerFunc) http.HandlerFunc {

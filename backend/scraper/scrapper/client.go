@@ -17,7 +17,6 @@ type Client struct {
 	ResultChan     chan *module.PreviewPost
 	ErrorChan      chan error
 	WG             *sync.WaitGroup
-	Filter         *module.Filter
 	Params         *module.URLParams
 	Done           context.CancelFunc
 	Context        context.Context
@@ -25,7 +24,7 @@ type Client struct {
 }
 
 func (c *Client) ScrapPosts() {
-	for _, source := range c.Filter.Sources {
+	for _, source := range c.Params.Sources {
 		c.WG.Add(1)
 		collector := colly.NewCollector()
 		switch source {
