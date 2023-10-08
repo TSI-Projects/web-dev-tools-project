@@ -148,6 +148,7 @@ func (h *Handler) Wait() {
 }
 
 func (h *Handler) Clear() {
+	h.CloseSSEConnection()
 	close(h.ErrorChan)
 	close(h.ResultChan)
 	h.TimeoutTimer.Stop()
@@ -155,6 +156,11 @@ func (h *Handler) Clear() {
 	h.Scraper = &scrapper.Client{}
 	h.WaitGroup = &sync.WaitGroup{}
 	h.Mutex = &sync.Mutex{}
+}
+
+func (h *Handler) CloseSSEConnection() {
+	fmt.Fprintf(h.Writer, "event: close\ndata: Connection closed\n\n")
+	h.Writer.(http.Flusher).Flush()
 }
 
 func toByteArray(any interface{}) ([]byte, error) {
