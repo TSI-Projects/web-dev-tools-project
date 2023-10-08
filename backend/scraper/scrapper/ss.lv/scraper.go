@@ -34,7 +34,6 @@ func ScrapPosts(input string, currentPage uint8, wg *sync.WaitGroup, c *colly.Co
 			URL:          url,
 			PreviewImage: previewImage,
 			Title:        title,
-			Description:  description,
 			Price:        price,
 		}
 	})

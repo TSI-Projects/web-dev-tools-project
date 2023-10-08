@@ -67,7 +67,6 @@ func SendPreviewPostsToChannel(response *Response, resultChan chan *module.Previ
 	for _, item := range response.Items {
 		resultChan <- &module.PreviewPost{
 			Title:        item.Title,
-			Description:  item.Title,
 			URL:          item.RedirectURL,
 			PreviewImage: item.Image,
 			Price:        item.Price,
