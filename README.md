@@ -2,11 +2,11 @@
 
 - [Description](#description)
 - [Backend](#backend)
-   - [Development](#development)
+   - [Server](#server)
    - [API](#api)
 - [Frontend](#frontend)
    - [Setup](#setup)
-   - [Development](#development-1)
+   - [Development](#development)
    - [Production](#production)
 
 # Description
@@ -21,16 +21,15 @@ We hope that this repository serves as a valuable resource for fellow students a
 
 If you don't have the Golang runtime installed on your system, you'll need to install it by following the installation guide in the official [Golang documentation](https://go.dev/doc/install).
 
-## Development
+## Server
 1. Go to [backend scraper](backend/scraper) directory.
-2. Run following command start the development server:
+2. Run following command to start the server:
 
 ```bash
 go run main.go
 ```
 
-It will automatically install all necessary dependencies and then run
-the development server on host <http://localhost:8080>.
+It will automatically install all necessary dependencies and then run the server on host <http://localhost:8080>.
 
 ## API
 <details>
