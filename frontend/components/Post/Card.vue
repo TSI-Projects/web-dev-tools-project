@@ -4,6 +4,8 @@
         class="q-hoverable cursor-pointer"
         href="http://localhost"
         @click="navigateToPost"
+        @click.middle="navigateToPost"
+        @mousedown.middle.prevent.stop="null"
     >
         <div
             tabindex="-1"
