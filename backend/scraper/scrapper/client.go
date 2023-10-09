@@ -26,9 +26,9 @@ type Client struct {
 func (c *Client) ScrapPosts() {
 	for _, source := range c.Params.Sources {
 		c.WG.Add(1)
-		collector := colly.NewCollector()
 		switch source {
 		case module.SOURCE_SS:
+			collector := colly.NewCollector()
 			go ss.ScrapPosts(c.Params.SearchedItem, c.Params.SSCurrentPage, c.WG, collector, c.PaginationChan, c.ResultChan, c.ErrorChan)
 		case module.SOURCE_BANKNOTE:
 			go banknote.ScrapPosts(c.Params.SearchedItem, c.Params.BanknoteCurrentPage, c.WG, c.PaginationChan, c.ResultChan, c.ErrorChan)
