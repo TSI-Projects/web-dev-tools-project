@@ -45,7 +45,7 @@
                         <template #action>
                             <q-btn
                                 flat
-                                @click="() => sseExecute()"
+                                @click="() => refetch()"
                             >
                                 <q-icon
                                     left
@@ -122,23 +122,53 @@ const parsedQuery = computed<FilterFields>({
     },
 });
 
-const { posts: result, error, pending, eof, close: sseClose, execute: sseExecute } = posts.sseFetch({
-    query: {
-        query: parsedQuery.value.query,
-        sources: parsedQuery.value.sources,
-        categories: parsedQuery.value.categories,
-        price: {
-            min: parsedQuery.value.price.min,
-            max: parsedQuery.value.price.max,
+const { posts: result, eof, error, pending, close, execute } = posts.sseFetch(() => {
+    return {
+        query: {
+            query: parsedQuery.value.query,
+            sources: parsedQuery.value.sources,
+            categories: parsedQuery.value.categories,
+            price: {
+                min: parsedQuery.value.price.min,
+                max: parsedQuery.value.price.max,
+            },
         },
-    },
+    }
 });
 
-watch(parsedQuery, () => sseExecute());
+const page = ref<number>(1);
+
+watch(parsedQuery, () => {
+    result.value = [];
+
+    if (process.client) {
+        window.scrollTo(0, 0);
+    }
+
+    execute({
+        page: page.value = 1,
+        resetAvailableSources: true,
+    });
+});
 
 const onLoad: QInfiniteScroll['onLoad'] = (_, done) => {
-    sseExecute(() => done());
+    execute({
+        page: page.value,
+        resetAvailableSources: false,
+        onFinish: () => {
+            page.value += 1;
+
+            done();
+        },
+    })
 };
 
-onBeforeUnmount(() => sseClose());
+const refetch = () => {
+    execute({
+        page: page.value,
+        resetAvailableSources: false,
+    });
+};
+
+onBeforeUnmount(() => close());
 </script>
