@@ -19,7 +19,7 @@ func Start() {
 }
 
 func productHandler(w http.ResponseWriter, r *http.Request) {
-	params := &module.URLParams{}
+	params := &module.URLParams{Filter: &module.Filter{}}
 	decoder := schema.NewDecoder()
 	if err := decoder.Decode(params, r.Form); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
