@@ -180,13 +180,7 @@ export default function () {
             close,
         };
     };
-    
-    const fetchOne = () => {
-        // TODO: implement when the backend is ready
-    };
-
     return {
         sseFetch,
-        fetchOne,
     };
 }

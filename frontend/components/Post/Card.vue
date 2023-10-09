@@ -20,12 +20,6 @@
                     {{ props.title }}
                 </q-tooltip>
             </div>
-            <div
-                class="text-subtitle2 line-clamp"
-                style="--line-clamp: 2;"
-            >
-                {{ props.description }}
-            </div>
             <div class="text-h6 text-weight-bold text-red">
                 {{ props.price }}
             </div>
@@ -37,7 +31,6 @@
 export type Props = {
     previewImg: string;
     title: string;
-    description: string;
     price: string;
     url: string;
 };
