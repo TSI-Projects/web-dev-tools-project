@@ -1,5 +1,6 @@
 # Table of Contents
 
+- [Description](#description)
 - [Backend](#backend)
    - [Development](#development)
    - [API](#api)
@@ -7,6 +8,14 @@
    - [Setup](#setup)
    - [Development](#development-1)
    - [Production](#production)
+
+# Description
+
+This GitHub project, created by [Vadim](https://github.com/SkinonikS) and [Andrej](https://github.com/AndrejsPon00) as part of our coursework in the "WEB Application Development Tools" subject at TSI, is designed to showcase our skills and knowledge in web application development.
+
+This project reflects our teamwork and collaboration skills, as we've worked together to bring our ideas to life and overcome challenges along the way.
+
+We hope that this repository serves as a valuable resource for fellow students and anyone interested in web application development. Feel free to explore our code, documentation, and share your feedback or questions. Thank you for visiting our project!
 
 # Backend
 
