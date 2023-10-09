@@ -86,15 +86,6 @@ const route = useRoute();
 const router = useRouter();
 const posts = usePosts();
 
-const navigateToPost = (url: string) => {
-    router.push({
-        name: 'products-url',
-        params: {
-            url: btoa(url),
-        },
-    });
-};
-
 const parsedQuery = computed<FilterFields>({
     get: () => {
         return {
@@ -167,6 +158,12 @@ const refetch = () => {
         page: page.value,
         resetAvailableSources: false,
     });
+};
+
+const navigateToPost = (url: string) => {
+    if (process.client) {
+        window.open(url, '_blank');
+    }
 };
 
 onBeforeUnmount(() => close());

@@ -4,6 +4,8 @@
         class="q-hoverable cursor-pointer"
         href="http://localhost"
         @click="navigateToPost"
+        @click.middle="navigateToPost"
+        @mousedown.middle.prevent.stop="null"
     >
         <div
             tabindex="-1"
@@ -24,10 +26,21 @@
                 {{ props.price }}
             </div>
         </q-card-section>
+        <q-separator />
+        <q-card-actions class="align-center">
+            <q-icon
+                :name="mdiWeb"
+                size="xs"
+                class="q-mr-sm"
+            />
+            <span class="text-uppercase">{{ sourceHost }}</span>
+        </q-card-actions>
     </q-card>
 </template>
 
 <script lang="ts" setup>
+import { mdiWeb } from '@quasar/extras/mdi-v7';
+
 export type Props = {
     previewImg: string;
     title: string;
@@ -45,4 +58,6 @@ const props = defineProps<Props>();
 const navigateToPost = () => {
     emits('navigate', props.url);
 };
+
+const sourceHost = new URL(props.url).hostname.replaceAll('www.', '');
 </script>
