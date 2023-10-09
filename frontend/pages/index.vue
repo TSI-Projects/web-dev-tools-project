@@ -15,7 +15,6 @@
                 >
                     <post-card
                         :title="post.title"
-                        :description="post.description"
                         :price="post.price"
                         :preview-img="post.preview_img"
                         :url="post.url"
