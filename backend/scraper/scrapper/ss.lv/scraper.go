@@ -17,6 +17,7 @@ const (
 
 func ScrapPosts(input string, currentPage uint8, wg *sync.WaitGroup, c *colly.Collector, paginationChan chan *module.Pagination, result chan *module.PreviewPost, errorChan chan error) {
 	defer wg.Done()
+	isPaginationSend := false
 	encodedQuery := encodeStringToHTML(input)
 	completeURL := combineURL(BASE_SS_URL, encodedQuery, currentPage)
 	c.OnHTML("tr:has(td.msga2):has(td.msg2):has(td.msga2-o.pp6)", func(e *colly.HTMLElement) {
@@ -39,10 +40,8 @@ func ScrapPosts(input string, currentPage uint8, wg *sync.WaitGroup, c *colly.Co
 	})
 
 	c.OnHTML(".td2", func(e *colly.HTMLElement) {
-		paginationChan <- &module.Pagination{
-			Source:  module.SOURCE_SS,
-			HasNext: hasNextPage(currentPage, e),
-		}
+		sendPagination(currentPage, e, paginationChan)
+		isPaginationSend = true
 	})
 
 	c.OnRequest(func(r *colly.Request) {
@@ -56,9 +55,24 @@ func ScrapPosts(input string, currentPage uint8, wg *sync.WaitGroup, c *colly.Co
 
 	c.Visit(completeURL)
 	c.Wait()
+
+	if !isPaginationSend {
+		sendPagination(currentPage, nil, paginationChan)
+	}
+}
+
+func sendPagination(currentPage uint8, e *colly.HTMLElement, channel chan *module.Pagination) {
+	channel <- &module.Pagination{
+		Source:  module.SOURCE_SS,
+		HasNext: hasNextPage(currentPage, e),
+	}
 }
 
 func hasNextPage(currentPage uint8, e *colly.HTMLElement) bool {
+	if e == nil {
+		return false
+	}
+
 	hasNextPage := false
 	for _, page := range e.ChildTexts("a[rel='next']") {
 		uintPage, err := strconv.Atoi(page)

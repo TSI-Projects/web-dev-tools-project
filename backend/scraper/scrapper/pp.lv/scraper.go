@@ -1,10 +1,10 @@
 package pp
 
 import (
-	"errors"
 	"fmt"
 	"io"
 	"net/http"
+	"reflect"
 	"strings"
 	"sync"
 
@@ -48,24 +48,25 @@ func FetchResponse(input string) ([]byte, error) {
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return nil, errors.New("out of bounds")
+		return nil, nil
 	}
 
 	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
-	return body, nil
+	return body, err
 }
 
 func DecodeResponse(response []byte) (*Response, error) {
+	if isNil(response) {
+		return nil, nil
+	}
+
 	res := &Response{}
 	err := json.Unmarshal(response, res)
 	return res, err
 }
 
 func SendPreviewPostsToChannel(response *Response, resultChan chan *module.PreviewPost) {
-	if !isResponseEmptyOrNil(response) {
+	if isNil(response) {
 		return
 	}
 
@@ -91,6 +92,9 @@ func SendPaginationPostsToChannel(currentPage uint8, response *Response, paginat
 }
 
 func hasNextPage(currentPage uint8, response *Response) bool {
+	if isNil(response) {
+		return false
+	}
 	var totalPages float32 = float32(response.Content.ItemsCount) / POSTS_IN_ONE_PAGE
 	return totalPages > float32(currentPage)
 }
@@ -121,6 +125,6 @@ func getFullURL(query string, pageNumber uint8) string {
 	return fmt.Sprintf("%s%s%d%s%s", BASE_PP_URL, BASE_PAGE_QUERY, pageNumber, BASE_SEARCH_QUERY, encodeSpacesForURL(query))
 }
 
-func isResponseEmptyOrNil(response *Response) bool {
-	return response == nil || len(response.Content.Data) == 0
+func isNil(value interface{}) bool {
+	return value == nil || reflect.ValueOf(value).IsNil()
 }
