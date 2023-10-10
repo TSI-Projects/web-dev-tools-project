@@ -1,6 +1,6 @@
 # Table of Contents
 
-- [Description](#description)
+- [About Project](#about-project)
 - [Backend](#backend)
    - [Server](#server)
    - [API](#api)
@@ -8,8 +8,11 @@
    - [Setup](#setup)
    - [Development](#development)
    - [Production](#production)
+        - [Build the Application](#build-the-application)
+        - [Local Production Preview](#local-production-preview)
+- [License](#license)
 
-# Description
+# About Project
 
 This GitHub project, created by [Vadim](https://github.com/SkinonikS) and [Andrej](https://github.com/AndrejsPon00) as part of our coursework in the "WEB Application Development Tools" subject at TSI, is designed to showcase our skills and knowledge in web application development.
 
@@ -19,50 +22,49 @@ We hope that this repository serves as a valuable resource for fellow students a
 
 # Backend
 
-If you don't have the Golang runtime installed on your system, you'll need to install it by following the installation guide in the official [Golang documentation](https://go.dev/doc/install).
+The backend of our application is written in Golang and serves as the foundation for data retrieval. To ensure the backend functions properly, you'll need to have the Golang runtime installed on your system. If you haven't installed it yet, please refer to the official [Golang documentation](https://go.dev/doc/install) for installation instructions.
 
 ## Server
-1. Go to [backend scraper](backend/scraper) directory.
-2. Run following command to start the server:
+
+To initiate the backend server navigate to [backend](backend/scraper) page and run following command:
 
 ```bash
 go run main.go
 ```
 
-It will automatically install all necessary dependencies and then run the server on host <http://localhost:8080>.
+This command handles the automatic installation of all required dependencies and launches the server. The server will be accessible at <http://localhost:8080>.
 
 ## API
+
 <details>
 <summary>
 <code>GET</code>
 <code>SSE</code>
-<code><b>/posts/search</b></code>
+<code><b>/posts/search</b></code> - Search for posts
 </summary>
 
 #### Parameters
 
 | Name | Type | In | Require |Description |
 | :--- | :--- | :--- | :--- | :--- |
-| `query` | `string` | query | + | Post name to search |
-| `sources` | `string[]` | query | - | Sources to search from |
-| `pp_page` | `number` | query | - | pp.lv page number |
-| `ss_page` | `number` | query | - | ss.lv page number |
-| `facebook_page` | `number` | query | - | facebook.com page number |
-| `banknote_page` | `number` | query | - | banknote.lv page number |
+| `query` | `string` | query | + | The name of the post you want to search for. |
+| `sources` | `string[]` | query | - | Specify sources to search from. |
+| `pp_page` | `number` | query | - | Page number for pp.lv. |
+| `ss_page` | `number` | query | - | Page number for ss.lv. |
+| `facebook_page` | `number` | query | - | Page number for facebook.com. |
+| `banknote_page` | `number` | query | - | Page number for banknote.lv. |
 
 #### Events
 
 <table>
 <tr>
-<td><b>Status</b></td>
+<td><b>Name</b></td>
 <td><b>Description</b></td>
 <td><b>Response</b></td>
 </tr>
 <tr>
 <td>posts</td>
-<td>
-Partially send posts from one page.
-</td>
+<td>This event partially sends posts from a single page.</td>
 <td>
 
 ```typescript
@@ -81,9 +83,7 @@ Partially send posts from one page.
 </tr>
 <tr>
 <td>pagination</td>
-<td>
-Dispatches once after page was scarped.
-</td>
+<td>This event dispatches once after a page has been scraped.</td>
 <td>
 
 ```typescript
@@ -98,10 +98,14 @@ Dispatches once after page was scarped.
 <tr>
 <td>close</td>
 <td>
-Dispatches when scraping was finished.
+This event dispatches when the scraping process is complete. The connection will be closed.
 </td>
 <td>
-Connection closed
+
+```typescript
+"Connection closed"
+```
+
 </td>
 </tr>
 </table>
@@ -109,14 +113,13 @@ Connection closed
 
 # Frontend
 
-If you don't have the JavaScript runtime installed on your system, you'll need to install it. The [Framework](https://nuxt.com/) we use to run our frontend server may use one of the following JavaScript runtimes to work correctly:
+The frontend of our application is powered by JavaScript and utilizes the [Nuxt.js](https://nuxt.com/) framework to run the frontend server. To ensure seamless operation, you'll need to have a JavaScript runtime installed on your system. Depending on your preference, you can choose one of the following JavaScript runtimes:
 - [NodeJS](https://nodejs.org/en/download)
 - [Bun](https://bun.sh/docs/installation)
 
 ## Setup
 
-1. Go to [frontend](frontend) directory.
-2. Install the dependencies:
+Before you can get started with the frontend, you must install the necessary dependencies. You can do this using your preferred package manager:
 
 ```bash
 # npm
@@ -129,11 +132,11 @@ yarn install
 bun install
 ```
 
-It will automatically install all necessary dependencies. You can then either run [development server](#development-server) or [bundle/build](#production) the production server.
+This command will install all the required dependencies for the frontend portion of the application. You can then either run [development](#development) server or [build](#production) the production server.
 
 ## Development
 
-Start the development server on `http://localhost:3000`:
+To start the development server and work on your frontend code, run the following command:
 
 ```bash
 # npm
@@ -146,9 +149,15 @@ yarn dev
 bun run dev
 ```
 
+This will launch a development server at http://localhost:3000, allowing you to make changes and see them in real-time.
+
 ## Production
 
-Build the application for production:
+When you're ready to prepare your application for production deployment, follow these steps:
+
+### Build the Application
+
+To build the application for production, execute the following command:
 
 ```bash
 # npm
@@ -161,7 +170,11 @@ yarn build
 bun run build
 ```
 
-Locally preview production build:
+This command will compile and optimize your code for production use.
+
+### Local Production Preview
+
+If you want to preview the production build locally before deployment, use the following command:
 
 ```bash
 # npm
@@ -173,3 +186,9 @@ yarn preview
 # bun
 bun run preview
 ```
+
+This will allow you to view and test your production-ready application on your local machine, ensuring everything is working as expected before deploying it to a production server.
+
+# License
+
+This project is open-source and available under the [MIT License](LICENSE). You are free to use, modify, and distribute the code as per the terms of the license. Please review the full license text for more details.
