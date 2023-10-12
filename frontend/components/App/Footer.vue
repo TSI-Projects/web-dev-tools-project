@@ -9,7 +9,7 @@
                     <div class="text-h6 q-mb-md">
                         О Нас
                     </div>
-                    {{ appName }} – ваш надежный источник лучших предложений от ведущих досок объявлений. Мы собираем актуальные объявления со всех известных площадок для вашего удобства. Найдите идеальное предложение прямо сейчас!
+                    {{ aboutUs }}
                 </div>
                 <div class="col-12 col-sm-6 col-md-12 col-lg-5 col-xl-4">
                     <div class="text-h6 q-mb-sm">
@@ -50,9 +50,11 @@
 <script lang="ts" setup>
 import { mdiGithub } from '@quasar/extras/mdi-v7';
 
-const { sourceCodeLink, appName } = useAppConfig();
+const appConfig = useAppConfig();
 
 const navigateToSourceCode = () => {
-    window.open(sourceCodeLink, '_blank');
+    window.open(appConfig.sourceCodeLink, '_blank');
 };
+
+const aboutUs = appConfig.footerAboutUs.replace('{{ siteName }}', appConfig.appName);
 </script>

@@ -18,6 +18,12 @@ export default defineNuxtConfig({
             'Screen',
             'Cookies',
         ],
+        config: {
+            // @ts-ignore
+            lang: {
+                noHtmlAttrs: true,
+            },
+        },
         sassVariables: '@/assets/css/quasar.variables.scss',
     },
     css: [
@@ -25,6 +31,9 @@ export default defineNuxtConfig({
     ],
     runtimeConfig: {
         public: {
+            app: {
+                rootUrl: 'http://localhost:3001',
+            },
             api: {
                 baseUrl: 'http://localhost:8080',
             },

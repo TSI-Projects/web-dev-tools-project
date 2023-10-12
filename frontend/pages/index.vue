@@ -82,6 +82,16 @@ import { mdiAlertDecagram, mdiReload } from '@quasar/extras/mdi-v7';
 import { QInfiniteScroll } from 'quasar';
 import { FilterFields } from '~/components/Post/Filter/Drawer.vue';
 
+useCustomSeoMeta({
+    title: 'Главная',
+    openGraph: {
+        ogType: 'website',
+    },
+    twitterCard: {
+        twitterCard: 'summary',
+    },
+});
+
 const route = useRoute();
 const router = useRouter();
 const posts = usePosts();
