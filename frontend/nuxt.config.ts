@@ -9,6 +9,17 @@ export default defineNuxtConfig({
     modules: [
         'nuxt-quasar-ui',
     ],
+    app: {
+        head: {
+            link: [
+                {
+                    rel: 'icon',
+                    type: 'image/x-icon',
+                    href: '/favicon.ico',
+                }
+            ],
+        },
+    },
     quasar: {
         lang: 'en-US',
         iconSet: 'svg-mdi-v7',
