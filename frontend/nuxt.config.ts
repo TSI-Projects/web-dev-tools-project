@@ -9,6 +9,11 @@ export default defineNuxtConfig({
     modules: [
         'nuxt-quasar-ui',
     ],
+    postcss: {
+        plugins: {
+            'postcss-rtlcss': { },
+        }
+    },
     app: {
         head: {
             link: [
