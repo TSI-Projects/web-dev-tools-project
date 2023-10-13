@@ -29,15 +29,15 @@ func (c *Client) ScrapPosts() {
 		switch source {
 		case module.SOURCE_SS:
 			collector := colly.NewCollector()
-			go ss.ScrapPosts(c.Params.SearchedItem, c.Params.SSCurrentPage, c.WG, collector, c.PaginationChan, c.ResultChan, c.ErrorChan)
+			go ss.ScrapPosts(c.Params.SearchedItem, c.Params.SSCurrentPage, c.Params.Filter, c.WG, collector, c.PaginationChan, c.ResultChan, c.ErrorChan)
 		case module.SOURCE_BANKNOTE:
-			go banknote.ScrapPosts(c.Params.SearchedItem, c.Params.BanknoteCurrentPage, c.WG, c.PaginationChan, c.ResultChan, c.ErrorChan)
+			go banknote.ScrapPosts(c.Params.SearchedItem, c.Params.BanknoteCurrentPage, c.Params.Filter, c.WG, c.PaginationChan, c.ResultChan, c.ErrorChan)
 		case module.SOURCE_FACEBOOK:
 			//add scrap facebook
 		case module.SOURCE_GELIOS:
 			//add scrap gelios
 		case module.SOURCE_PP:
-			go pp.ScrapPosts(c.Params.SearchedItem, c.Params.PPCurrentPage, c.WG, c.PaginationChan, c.ResultChan, c.ErrorChan)
+			go pp.ScrapPosts(c.Params.SearchedItem, c.Params.PPCurrentPage, c.Params.Filter, c.WG, c.PaginationChan, c.ResultChan, c.ErrorChan)
 		default:
 			log.Errorln("Unknown source: ", source)
 			c.WG.Done()

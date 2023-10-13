@@ -82,6 +82,16 @@ import { mdiAlertDecagram, mdiReload } from '@quasar/extras/mdi-v7';
 import { QInfiniteScroll } from 'quasar';
 import { FilterFields } from '~/components/Post/Filter/Drawer.vue';
 
+useCustomSeoMeta({
+    title: 'Главная',
+    openGraph: {
+        ogType: 'website',
+    },
+    twitterCard: {
+        twitterCard: 'summary',
+    },
+});
+
 const nuxtApp = useNuxtApp()
 const route = useRoute();
 const router = useRouter();
@@ -119,7 +129,7 @@ const parsedQuery = computed<FilterFields>({
     },
 });
 
-const { posts: result, eof, error, pending, close, execute } = posts.sseFetch(() => {
+const { posts: result, eof, error, pending, close, execute, resetEofSources } = posts.sseFetch(() => {
     return {
         query: {
             query: parsedQuery.value.query,
@@ -142,16 +152,16 @@ watch(parsedQuery, () => {
         window.scrollTo(0, 0);
     }
 
+    resetEofSources();
+
     execute({
         page: page.value = 1,
-        resetAvailableSources: true,
     });
 });
 
 const onLoad: QInfiniteScroll['onLoad'] = (_, done) => {
     execute({
         page: page.value,
-        resetAvailableSources: false,
         onFinish: () => {
             page.value += 1;
 
@@ -163,7 +173,6 @@ const onLoad: QInfiniteScroll['onLoad'] = (_, done) => {
 const refetch = () => {
     execute({
         page: page.value,
-        resetAvailableSources: false,
     });
 };
 
