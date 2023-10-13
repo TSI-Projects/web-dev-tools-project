@@ -6,6 +6,7 @@ import (
 
 	"github.com/AndrejsPon00/web-dev-tools/backend/module"
 	"github.com/AndrejsPon00/web-dev-tools/backend/scrapper/banknote"
+	"github.com/AndrejsPon00/web-dev-tools/backend/scrapper/facebook"
 	"github.com/AndrejsPon00/web-dev-tools/backend/scrapper/pp.lv"
 	"github.com/AndrejsPon00/web-dev-tools/backend/scrapper/ss.lv"
 	"github.com/gocolly/colly/v2"
@@ -23,6 +24,7 @@ type Client struct {
 
 	PPCurentPage        uint8
 	BanknoteCurrentPage uint8
+	FacebookCurrentPage uint8
 }
 
 func (c *Client) ScrapPosts() {
@@ -35,7 +37,7 @@ func (c *Client) ScrapPosts() {
 		case module.SOURCE_BANKNOTE:
 			go banknote.ScrapPosts(c.SearchedItem, c.BanknoteCurrentPage, c.WG, c.ResultChan, c.ErrorChan)
 		case module.SOURCE_FACEBOOK:
-			//add scrap facebook
+			go facebook.ScrapPosts(c.SearchedItem, c.FacebookCurrentPage, c.WG, c.ResultChan, c.ErrorChan)
 		case module.SOURCE_GELIOS:
 			//add scrap gelios
 		case module.SOURCE_PP_LV:

@@ -14,7 +14,7 @@ import (
 )
 
 const (
-	CONNECTION_TIMEOUT    = 5 * time.Second
+	CONNECTION_TIMEOUT    = 20 * time.Second
 	POSTS_BUFFER_CAPACITY = 25
 )
 
@@ -54,6 +54,7 @@ func (h *Handler) SetSearchedProduct(params *module.URLParams) {
 	h.Scraper.SearchedItem = params.SearchedItem
 	h.Scraper.BanknoteCurrentPage = params.BanknoteCurrentPage
 	h.Scraper.PPCurentPage = params.PPCurrentPage
+	h.Scraper.FacebookCurrentPage = params.FacebookCurrentPage
 }
 
 func (h *Handler) SetWriter(w http.ResponseWriter) {

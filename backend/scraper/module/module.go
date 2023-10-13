@@ -40,6 +40,7 @@ type URLParams struct {
 	SearchedItem        string `schema:"product"`
 	PPCurrentPage       uint8  `schema:"pp_page"`
 	BanknoteCurrentPage uint8  `schema:"banknote_page"`
+	FacebookCurrentPage uint8  `schema:"facebook_page"`
 }
 
 type Filter struct {

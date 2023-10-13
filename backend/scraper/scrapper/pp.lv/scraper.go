@@ -65,10 +65,6 @@ func DecodeResponse(response []byte) (*Response, error) {
 }
 
 func SendPreviewPostsToChannel(response *Response, resultChan chan *module.PreviewPost) {
-	if !isResponseEmptyOrNil(response) {
-		return
-	}
-
 	for _, item := range response.Content.Data {
 		if containsAds(item) {
 			continue
@@ -108,8 +104,4 @@ func encodeSpacesForURL(query string) string {
 
 func getFullURL(query string, pageNumber uint8) string {
 	return fmt.Sprintf("%s%s%d%s%s", BASE_PP_URL, BASE_PAGE_QUERY, pageNumber, BASE_SEARCH_QUERY, encodeSpacesForURL(query))
-}
-
-func isResponseEmptyOrNil(response *Response) bool {
-	return response == nil || len(response.Content.Data) == 0
 }
