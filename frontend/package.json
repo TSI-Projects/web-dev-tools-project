@@ -13,12 +13,13 @@
         "@nuxt/eslint-config": "^0.2.0",
         "@quasar/extras": "^1.16.7",
         "@types/qs": "^6.9.8",
-        "eslint": "^8.50.0",
+        "eslint": "^8.51.0",
         "nuxt": "^3.7.4",
         "nuxt-quasar-ui": "^2.0.6",
+        "postcss-rtlcss": "^4.0.8",
         "qs": "^6.11.2",
         "quasar": "^2.12.7",
-        "sass": "^1.68.0",
+        "sass": "^1.69.3",
         "typescript": "^5.2.2"
     }
 }
