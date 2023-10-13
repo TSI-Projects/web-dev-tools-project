@@ -102,10 +102,8 @@ export default function () {
                 query: params.query.query,
                 sources: Array.from(availableSources),
                 categories: params.query.categories,
-                price: {
-                    min: params.query.price.min,
-                    max: params.query.price.max,
-                },
+                price_min: params.query.price.min,
+                price_max: params.query.price.max,
                 ...pages,
             }, {
                 arrayFormat: 'repeat',
