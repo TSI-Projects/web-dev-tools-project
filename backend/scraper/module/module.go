@@ -8,6 +8,10 @@ const (
 	SOURCE_BANKNOTE = "banknote"
 )
 
+const (
+	MAX_UINT32_SIZE = 4294967295
+)
+
 type Pagination struct {
 	Source  string `json:"source"`
 	HasNext bool   `json:"has_next"`

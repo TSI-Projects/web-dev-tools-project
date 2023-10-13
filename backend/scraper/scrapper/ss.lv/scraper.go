@@ -5,6 +5,7 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+	"unicode"
 
 	"github.com/AndrejsPon00/web-dev-tools/backend/module"
 	"github.com/gocolly/colly/v2"
@@ -15,7 +16,7 @@ const (
 	BASE_SS_URL = "https://www.ss.lv/ru/search-result"
 )
 
-func ScrapPosts(input string, currentPage uint8, wg *sync.WaitGroup, c *colly.Collector, paginationChan chan *module.Pagination, result chan *module.PreviewPost, errorChan chan error) {
+func ScrapPosts(input string, currentPage uint8, filter *module.Filter, wg *sync.WaitGroup, c *colly.Collector, paginationChan chan *module.Pagination, result chan *module.PreviewPost, errorChan chan error) {
 	defer wg.Done()
 	isPaginationSend := false
 	encodedQuery := encodeStringToHTML(input)
@@ -31,11 +32,16 @@ func ScrapPosts(input string, currentPage uint8, wg *sync.WaitGroup, c *colly.Co
 			return
 		}
 
-		result <- &module.PreviewPost{
+		post := &module.PreviewPost{
 			URL:          url,
 			PreviewImage: previewImage,
 			Title:        title,
 			Price:        price,
+		}
+
+		response := filterPreviewPostByPrice(post, filter)
+		if response != nil {
+			result <- response
 		}
 	})
 
@@ -59,6 +65,58 @@ func ScrapPosts(input string, currentPage uint8, wg *sync.WaitGroup, c *colly.Co
 	if !isPaginationSend {
 		sendPagination(currentPage, nil, paginationChan)
 	}
+}
+
+func filterPreviewPostByPrice(response *module.PreviewPost, filter *module.Filter) *module.PreviewPost {
+	if filter == nil {
+		return nil
+	}
+
+	if filter.PriceMax == 0 {
+		filter.PriceMax = module.MAX_UINT32_SIZE
+	}
+
+	if !isPriceAboveMinimum(filter.PriceMin, response.Price) {
+		return nil
+	}
+
+	if !isPriceBelowMaximum(filter.PriceMax, response.Price) {
+		return nil
+	}
+
+	return response
+}
+
+func isPriceBelowMaximum(maxPrice uint32, itemPrice string) bool {
+	strPrice := removeNonNumericChar(itemPrice)
+	price := strToUint32(strPrice)
+	return maxPrice >= price
+}
+
+func isPriceAboveMinimum(minPrice uint32, itemPrice string) bool {
+	strPrice := removeNonNumericChar(itemPrice)
+	price := strToUint32(strPrice)
+	return minPrice <= price
+}
+
+func removeNonNumericChar(str string) string {
+	var numericRunes []rune
+	for _, r := range str {
+		if unicode.IsDigit(r) {
+			numericRunes = append(numericRunes, r)
+		}
+	}
+	return string(numericRunes)
+}
+
+func strToUint32(str string) uint32 {
+	num, err := strconv.ParseUint(str, 10, 32)
+	if err != nil {
+		log.Errorf("Failed to convert string '%s' to uint32: %v", str, err)
+		return 0
+	}
+
+	return uint32(num)
 }
 
 func sendPagination(currentPage uint8, e *colly.HTMLElement, channel chan *module.Pagination) {
