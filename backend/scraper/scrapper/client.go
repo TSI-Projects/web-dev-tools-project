@@ -14,34 +14,30 @@ import (
 )
 
 type Client struct {
-	ResultChan   chan *module.PreviewPost
-	ErrorChan    chan error
-	WG           *sync.WaitGroup
-	Filter       *module.Filter
-	Done         context.CancelFunc
-	Context      context.Context
-	SearchedItem string
-
-	PPCurentPage        uint8
-	BanknoteCurrentPage uint8
-	FacebookCurrentPage uint8
+	PaginationChan chan *module.Pagination
+	ResultChan     chan *module.PreviewPost
+	ErrorChan      chan error
+	WG             *sync.WaitGroup
+	Params         *module.URLParams
+	Done           context.CancelFunc
+	Context        context.Context
 }
 
 func (c *Client) ScrapPosts() {
-	for _, source := range c.Filter.Sources {
+	for _, source := range c.Params.Sources {
 		c.WG.Add(1)
-		collector := colly.NewCollector()
 		switch source {
-		case module.SOURCE_SS_LV:
-			go ss.ScrapPosts(c.SearchedItem, c.WG, collector, c.ResultChan, c.ErrorChan)
+		case module.SOURCE_SS:
+			collector := colly.NewCollector()
+			go ss.ScrapPosts(c.Params.SearchedItem, c.Params.SSCurrentPage, c.Params.Filter, c.WG, collector, c.PaginationChan, c.ResultChan, c.ErrorChan)
 		case module.SOURCE_BANKNOTE:
-			go banknote.ScrapPosts(c.SearchedItem, c.BanknoteCurrentPage, c.WG, c.ResultChan, c.ErrorChan)
+			go banknote.ScrapPosts(c.Params.SearchedItem, c.Params.BanknoteCurrentPage, c.Params.Filter, c.WG, c.PaginationChan, c.ResultChan, c.ErrorChan)
 		case module.SOURCE_FACEBOOK:
-			go facebook.ScrapPosts(c.SearchedItem, c.FacebookCurrentPage, c.WG, c.ResultChan, c.ErrorChan)
+			go facebook.ScrapPosts(c.Params.SearchedItem, c.Params.FacebookCurrentPage, c.WG, c.ResultChan, c.ErrorChan)
 		case module.SOURCE_GELIOS:
 			//add scrap gelios
-		case module.SOURCE_PP_LV:
-			go pp.ScrapPosts(c.SearchedItem, c.PPCurentPage, c.WG, c.ResultChan, c.ErrorChan)
+		case module.SOURCE_PP:
+			go pp.ScrapPosts(c.Params.SearchedItem, c.Params.PPCurrentPage, c.Params.Filter, c.WG, c.PaginationChan, c.ResultChan, c.ErrorChan)
 		default:
 			log.Errorln("Unknown source: ", source)
 			c.WG.Done()

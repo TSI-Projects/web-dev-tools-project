@@ -8,8 +8,7 @@ import (
 )
 
 type IHandler interface {
-	SetSearchedProduct(params *module.URLParams)
-	SetFilter(f *module.Filter)
+	SetParams(params *module.URLParams)
 	SetWriter(w http.ResponseWriter)
 	AddWaitGroup(amount int)
 	GetScraper() *scrapper.Client

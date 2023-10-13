@@ -1,102 +1,107 @@
 <template>
-    <div class="column q-col-gutter-md">
-        <template v-if="status === 'success'">
-            <div class="col-auto">
-                <product-title
-                    :count="0"
-                    :has-query="!!parsedQuery.query"
-                />
-            </div>
-            <div class="col-auto">
-                <div class="row q-col-gutter-md">
-                    <div
-                        v-for="product in result"
-                        class="col-6 col-xl-2 col-lg-2 col-md-3 col-sm-4"
-                    >
-                        <product-card
-                            :title="product.title"
-                            :description="product.description"
-                            :price="product.price"
-                            :preview-img="product.preview_img"
-                            :url="product.url"
-                            @navigate="navigateToProduct"
-                        />
-                    </div>
-                </div>
-            </div>
-        </template>
-        <template v-else-if="status === 'error'">
-            <div class="col-auto">
-                <div class="row justify-center">
-                    <div class="col-12 col-xl-6 col-lg-6 col-md-6 col-sm-12">
-                        <q-banner
-                            class="text-white bg-red-10 shadow-2"
-                            rounded
-                        >
-                            <template #avatar>
-                                <q-icon :name="mdiAlertDecagram" />
-                            </template>
-                            <template #action>
-                                <q-btn
-                                    flat
-                                    @click="() => refresh()"
-                                >
-                                    <q-icon
-                                        left
-                                        :name="mdiReload"
-                                    /> Повторить
-                                </q-btn>
-                            </template>
-                            Ошибка загрузки данных с сервера.
-                        </q-banner>
-                    </div>
-                </div>
-            </div>
-        </template>
-        <template v-else-if="status === 'pending'">
-            <div class="col-auto self-center">
-                <q-spinner-grid
-                    color="primary"
-                    size="128px"
-                />
-            </div>
-        </template>
-    </div>
-    <client-only>
-        <teleport to="#q-page-container">
-            <q-page-sticky
-                id="q-page-sticky"
-                position="bottom-right"
-                :offset="[16, 16]"
+    <div>
+        <q-infinite-scroll
+            :offset="250"
+            :disable="error || eof"
+            @load="onLoad"
+        >
+            <div
+                v-if="result.length > 0"
+                class="row q-col-gutter-md"
             >
-                <product-filter-fab />
-            </q-page-sticky>
-        </teleport>
-        <teleport to="#q-layout">
-            <product-filter-drawer
-                v-model="parsedQuery"
-                :loading="status === 'pending'"
-            />
-        </teleport>
-    </client-only>
+                <div
+                    v-for="post in result"
+                    class="col-6 col-xl-2 col-lg-2 col-md-3 col-sm-4"
+                >
+                    <post-card
+                        :title="post.title"
+                        :price="post.price"
+                        :preview-img="post.preview_img"
+                        :url="post.url"
+                        @navigate="navigateToPost"
+                    />
+                </div>
+            </div>
+            <template #loading>
+                <div class="row justify-center q-my-md">
+                    <q-spinner-dots
+                        color="primary"
+                        size="64px"
+                    />
+                </div>
+            </template>
+        </q-infinite-scroll>
+        <template v-if="error">
+            <div class="row justify-center">
+                <div class="col-12 col-xl-6 col-lg-6 col-md-6 col-sm-12">
+                    <q-banner
+                        class="text-white bg-red-10 shadow-2"
+                        rounded
+                    >
+                        <template #avatar>
+                            <q-icon :name="mdiAlertDecagram" />
+                        </template>
+                        <template #action>
+                            <q-btn
+                                flat
+                                @click="() => refetch()"
+                            >
+                                <q-icon
+                                    left
+                                    :name="mdiReload"
+                                /> Повторить
+                            </q-btn>
+                        </template>
+                        Ошибка загрузки данных с сервера.
+                    </q-banner>
+                </div>
+            </div>
+        </template>
+        <client-only>
+            <teleport to="#q-page-container">
+                <q-page-sticky
+                    id="q-page-sticky"
+                    position="bottom-right"
+                    :offset="[16, 16]"
+                >
+                    <post-filter-fab />
+                </q-page-sticky>
+            </teleport>
+            <teleport to="#q-layout">
+                <post-filter-drawer
+                    v-model="parsedQuery"
+                    :loading="pending"
+                />
+            </teleport>
+        </client-only>
+    </div>
 </template>
 
 <script lang="ts" setup>
 import { mdiAlertDecagram, mdiReload } from '@quasar/extras/mdi-v7';
-import { FilterFields } from '~/components/Product/Filter/Drawer.vue';
+import { QInfiniteScroll } from 'quasar';
+import { FilterFields } from '~/components/Post/Filter/Drawer.vue';
 
+useCustomSeoMeta({
+    title: 'Главная',
+    openGraph: {
+        ogType: 'website',
+    },
+    twitterCard: {
+        twitterCard: 'summary',
+    },
+});
+
+const nuxtApp = useNuxtApp()
 const route = useRoute();
 const router = useRouter();
-const products = useProducts();
+const posts = usePosts();
 
-const navigateToProduct = (url: string) => {
-    router.push({
-        name: 'products-url',
-        params: {
-            url: btoa(url),
-        },
-    });
-};
+// According to this: https://nuxt.com/docs/migration/component-options#scrolltotop
+// `scrollToTop` is not currently supported, so we are using this workaround instead.
+nuxtApp.hook('page:finish', () => {
+    window.scrollTo(0, 0);
+});
 
 const parsedQuery = computed<FilterFields>({
     get: () => {
@@ -124,17 +129,58 @@ const parsedQuery = computed<FilterFields>({
     },
 });
 
-const { data: result, status, refresh } = useAsyncData('products', () => products.fetchAll({
-    query: {
-        query: parsedQuery.value.query,
-        sources: parsedQuery.value.sources,
-        categories: parsedQuery.value.categories,
-        price: {
-            min: parsedQuery.value.price.min,
-            max: parsedQuery.value.price.max,
+const { posts: result, eof, error, pending, close, execute, resetEofSources } = posts.sseFetch(() => {
+    return {
+        query: {
+            query: parsedQuery.value.query,
+            sources: parsedQuery.value.sources,
+            categories: parsedQuery.value.categories,
+            price: {
+                min: parsedQuery.value.price.min,
+                max: parsedQuery.value.price.max,
+            },
         },
-    },
-}), {
-    watch: [parsedQuery],
+    }
 });
+
+const page = ref<number>(1);
+
+watch(parsedQuery, () => {
+    result.value = [];
+
+    if (process.client) {
+        window.scrollTo(0, 0);
+    }
+
+    resetEofSources();
+
+    execute({
+        page: page.value = 1,
+    });
+});
+
+const onLoad: QInfiniteScroll['onLoad'] = (_, done) => {
+    execute({
+        page: page.value,
+        onFinish: () => {
+            page.value += 1;
+
+            done();
+        },
+    })
+};
+
+const refetch = () => {
+    execute({
+        page: page.value,
+    });
+};
+
+const navigateToPost = (url: string) => {
+    if (process.client) {
+        window.open(url, '_blank');
+    }
+};
+
+onBeforeUnmount(() => close());
 </script>

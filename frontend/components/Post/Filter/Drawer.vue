@@ -22,7 +22,7 @@
                 <div class="text-body2 q-mb-xs">
                     Поиск:
                 </div>
-                <product-filter-search-input
+                <post-filter-search-input
                     v-model="query"
                     :loading="loading"
                 />
@@ -33,19 +33,19 @@
             <div class="q-pa-md">
                 <div class="column q-col-gutter-md">
                     <div class="col">
-                        <product-filter-source-select
+                        <post-filter-source-select
                             v-model="sources"
                             :loading="props.loading"
                         />
                     </div>
                     <div class="col">
-                        <product-filter-category-select
+                        <post-filter-category-select
                             v-model="categories"
                             :loading="props.loading"
                         />
                     </div>
                     <div class="col">
-                        <product-filter-price-range
+                        <post-filter-price-range
                             v-model="price"
                             :loading="props.loading"
                         />

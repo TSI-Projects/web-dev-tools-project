@@ -12,25 +12,23 @@ import (
 
 func Start() {
 	r := mux.NewRouter()
-	r.HandleFunc("/search", basicMiddleware(productHandler)).Methods(http.MethodGet)
+	r.HandleFunc("/posts/search", basicMiddleware(productHandler)).Methods(http.MethodGet)
 
 	log.Println("Server is starting...")
 	log.Fatal(http.ListenAndServe(":8080", getCORSHandler(r)))
 }
 
 func productHandler(w http.ResponseWriter, r *http.Request) {
-	params := &module.URLParams{}
+	params := &module.URLParams{Filter: &module.Filter{}}
 	decoder := schema.NewDecoder()
 	if err := decoder.Decode(params, r.Form); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	filter := newFilter(params)
 	handler := NewHandler()
 	handler.SetWriter(w)
-	handler.SetSearchedProduct(params)
-	handler.SetFilter(filter)
+	handler.SetParams(params)
 
 	handler.GetScraper().WG.Add(1)
 	go handler.GetScraper().ScrapPosts()
@@ -39,22 +37,16 @@ func productHandler(w http.ResponseWriter, r *http.Request) {
 	go handler.SetupErrorChannel()
 	go handler.SetupResultChannel()
 
+	handler.GetScraper().WG.Wait()
 	handler.Wait()
 	handler.Clear()
 }
 
-func newFilter(params *module.URLParams) *module.Filter {
-	return &module.Filter{
-		PriceMax: params.PriceMax,
-		PriceMin: params.PriceMin,
-		Category: params.Category,
-		Sources:  params.Sources,
-	}
-}
-
 func basicMiddleware(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
+		w.Header().Set("Content-Type", "text/event-stream")
+		w.Header().Set("Cache-Control", "no-cache")
+		w.Header().Set("Connection", "keep-alive")
 
 		if err := r.ParseForm(); err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)

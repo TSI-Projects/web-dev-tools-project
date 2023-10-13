@@ -9,6 +9,22 @@ export default defineNuxtConfig({
     modules: [
         'nuxt-quasar-ui',
     ],
+    postcss: {
+        plugins: {
+            'postcss-rtlcss': { },
+        }
+    },
+    app: {
+        head: {
+            link: [
+                {
+                    rel: 'icon',
+                    type: 'image/x-icon',
+                    href: '/favicon.ico',
+                }
+            ],
+        },
+    },
     quasar: {
         lang: 'en-US',
         iconSet: 'svg-mdi-v7',
@@ -18,6 +34,12 @@ export default defineNuxtConfig({
             'Screen',
             'Cookies',
         ],
+        config: {
+            // @ts-ignore
+            lang: {
+                noHtmlAttrs: true,
+            },
+        },
         sassVariables: '@/assets/css/quasar.variables.scss',
     },
     css: [
@@ -25,6 +47,9 @@ export default defineNuxtConfig({
     ],
     runtimeConfig: {
         public: {
+            app: {
+                rootUrl: 'http://localhost:3001',
+            },
             api: {
                 baseUrl: 'http://localhost:8080',
             },
