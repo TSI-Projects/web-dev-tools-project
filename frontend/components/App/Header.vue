@@ -5,7 +5,7 @@
     >
         <q-toolbar>
             <q-toolbar-title>
-                {{ appName }}
+                {{ appConfig.appName }}
             </q-toolbar-title>
             <q-space />
             <app-dark-mode-switcher />
@@ -14,5 +14,5 @@
 </template>
 
 <script lang="ts" setup>
-const { appName } = useAppConfig();
+const appConfig = useAppConfig();
 </script>
