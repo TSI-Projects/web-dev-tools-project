@@ -82,9 +82,16 @@ import { mdiAlertDecagram, mdiReload } from '@quasar/extras/mdi-v7';
 import { QInfiniteScroll } from 'quasar';
 import { FilterFields } from '~/components/Post/Filter/Drawer.vue';
 
+const nuxtApp = useNuxtApp()
 const route = useRoute();
 const router = useRouter();
 const posts = usePosts();
+
+// According to this: https://nuxt.com/docs/migration/component-options#scrolltotop
+// `scrollToTop` is not currently supported, so we are using this workaround instead.
+nuxtApp.hook('page:finish', () => {
+    window.scrollTo(0, 0);
+});
 
 const parsedQuery = computed<FilterFields>({
     get: () => {
