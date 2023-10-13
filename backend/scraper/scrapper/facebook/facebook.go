@@ -20,7 +20,7 @@ const (
 	POSTS_IN_ONE_PAGE = 15
 )
 
-func ScrapPosts(input string, pageNumber uint8, wg *sync.WaitGroup, result chan *module.PreviewPost, errorChan chan error) {
+func ScrapPosts(input string, pageNumber uint8, wg *sync.WaitGroup, result chan *module.PreviewPost, paginationChan chan *module.Pagination, errorChan chan error) {
 	wd, err := newDriver()
 	if err != nil {
 		errorChan <- fmt.Errorf("error creating driver: %v", err)
@@ -48,6 +48,7 @@ func ScrapPosts(input string, pageNumber uint8, wg *sync.WaitGroup, result chan 
 
 	pageNumber = getCorrectPagePath(pageNumber)
 	getAndSendPosts(pageNumber, wd, result)
+	handlePagination(pageNumber, wd, paginationChan)
 	wg.Done()
 }
 
@@ -92,6 +93,32 @@ func getAndSendPosts(pageNumber uint8, driver selenium.WebDriver, resultChan cha
 		}
 	}
 
+}
+
+func handlePagination(pageNumber uint8, driver selenium.WebDriver, paginationChan chan *module.Pagination) {
+	pageNumber += 2
+	elementPath := buildElementPath(pageNumber, 1)
+	post, err := driver.FindElement(selenium.ByXPATH, elementPath)
+	if err != nil {
+		log.Warning("Post not found")
+		writePagination(false, paginationChan)
+		return
+	}
+
+	_, err = getText(PRICE_PATH, driver, post)
+	if err != nil {
+		writePagination(false, paginationChan)
+		return
+	}
+
+	writePagination(true, paginationChan)
+}
+
+func writePagination(HasNext bool, paginationChan chan *module.Pagination) {
+	paginationChan <- &module.Pagination{
+		Source:  module.SOURCE_FACEBOOK,
+		HasNext: HasNext,
+	}
 }
 
 func getAttribute(xPath string, attribute string, driver selenium.WebDriver, parentElement selenium.WebElement) (string, error) {

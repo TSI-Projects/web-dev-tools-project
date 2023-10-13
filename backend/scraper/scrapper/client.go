@@ -33,7 +33,7 @@ func (c *Client) ScrapPosts() {
 		case module.SOURCE_BANKNOTE:
 			go banknote.ScrapPosts(c.Params.SearchedItem, c.Params.BanknoteCurrentPage, c.Params.Filter, c.WG, c.PaginationChan, c.ResultChan, c.ErrorChan)
 		case module.SOURCE_FACEBOOK:
-			go facebook.ScrapPosts(c.Params.SearchedItem, c.Params.FacebookCurrentPage, c.WG, c.ResultChan, c.ErrorChan)
+			go facebook.ScrapPosts(c.Params.SearchedItem, c.Params.FacebookCurrentPage, c.WG, c.ResultChan, c.PaginationChan, c.ErrorChan)
 		case module.SOURCE_GELIOS:
 			//add scrap gelios
 		case module.SOURCE_PP:
