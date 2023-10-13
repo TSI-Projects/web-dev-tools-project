@@ -92,9 +92,16 @@ useCustomSeoMeta({
     },
 });
 
+const nuxtApp = useNuxtApp()
 const route = useRoute();
 const router = useRouter();
 const posts = usePosts();
+
+// According to this: https://nuxt.com/docs/migration/component-options#scrolltotop
+// `scrollToTop` is not currently supported, so we are using this workaround instead.
+nuxtApp.hook('page:finish', () => {
+    window.scrollTo(0, 0);
+});
 
 const parsedQuery = computed<FilterFields>({
     get: () => {

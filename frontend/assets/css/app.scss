@@ -22,6 +22,7 @@
 
 body {
     background-position: 24px -24px !important;
+    background-attachment: fixed !important; 
 
     &.body--dark {
         background-image: url(/images/background-light.svg) !important;
