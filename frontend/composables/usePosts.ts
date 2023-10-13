@@ -28,7 +28,6 @@ export type SseFetchParameters = () => {
 
 export type SseFetchResultExecuteOptions = {
     page: number;
-    resetAvailableSources: boolean;
     onFinish?: () => void;
 };
 
@@ -39,6 +38,7 @@ export type SseFetchResult = {
     eof: Ref<boolean>;
     execute: (options: SseFetchResultExecuteOptions) => void;
     close: () => void;
+    resetEofSources: () => void;
 };
 
 export default function () {
@@ -60,6 +60,7 @@ export default function () {
                 eof,
                 execute: () => { },
                 close: () => { },
+                resetEofSources: () => { },
             };
         }
         
@@ -67,13 +68,13 @@ export default function () {
 
         const eofSources = new Set<string>();
 
-        const execute = (options: SseFetchResultExecuteOptions): void  => {
+        const resetEofSources = (): void => {
+            eofSources.clear();
+        };
+
+        const execute = (options: SseFetchResultExecuteOptions): void => {
             if (pending.value) {
                 close();
-            }
-
-            if (options.resetAvailableSources) {
-                eofSources.clear();
             }
 
             const params = parametersResolver();
@@ -178,8 +179,10 @@ export default function () {
             eof,
             execute,
             close,
+            resetEofSources,
         };
     };
+
     return {
         sseFetch,
     };
