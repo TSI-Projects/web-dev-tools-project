@@ -148,9 +148,7 @@ const page = ref<number>(1);
 watch(parsedQuery, () => {
     result.value = [];
 
-    if (process.client) {
-        window.scrollTo(0, 0);
-    }
+    window.scrollTo(0, 0);
 
     resetEofSources();
 
@@ -177,9 +175,7 @@ const refetch = () => {
 };
 
 const navigateToPost = (url: string) => {
-    if (process.client) {
-        window.open(url, '_blank');
-    }
+    window.open(url, '_blank');
 };
 
 onBeforeUnmount(() => close());

@@ -29,7 +29,6 @@ export default defineNuxtConfig({
         lang: 'en-US',
         iconSet: 'svg-mdi-v7',
         plugins: [
-            'Dialog',
             'Dark',
             'Screen',
             'Cookies',
