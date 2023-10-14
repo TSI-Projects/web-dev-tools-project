@@ -70,7 +70,7 @@ func SendPreviewPostsToChannel(response *Response, resultChan chan *module.Previ
 			Title:        item.Title,
 			URL:          item.RedirectURL,
 			PreviewImage: item.Image,
-			Price:        item.Price,
+			Price:        fmt.Sprintf("%s €", item.Price),
 		}
 	}
 }

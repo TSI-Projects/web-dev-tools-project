@@ -7,7 +7,7 @@ type Response struct {
 
 type Item struct {
 	Title       string `json:"title"`
-	Price       string `json:"actual_price"`
+	Price       string `json:"price"`
 	Image       string `json:"img"`
 	RedirectURL string `json:"url"`
 }
