@@ -11,7 +11,10 @@
             tabindex="-1"
             class="q-focus-helper"
         />
-        <q-img :src="props.previewImg" />
+        <q-img
+            :src="props.previewImg"
+            :ratio="1"
+        />
         <q-card-section>
             <div
                 class="text-body1 text-weight-bold line-clamp"
