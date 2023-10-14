@@ -22,7 +22,7 @@ func ScrapPosts(input string, currentPage uint8, filter *module.Filter, wg *sync
 	encodedQuery := encodeStringToHTML(input)
 	completeURL := combineURL(BASE_SS_URL, encodedQuery, currentPage)
 	c.OnHTML("tr:has(td.msga2):has(td.msg2):has(td.msga2-o.pp6)", func(e *colly.HTMLElement) {
-		url := fmt.Sprintf("%s%s", BASE_SS_URL, e.ChildAttr("a", "href"))
+		url := fmt.Sprintf("%s%s", "https://www.ss.lv", e.ChildAttr("a", "href"))
 		previewImage := e.ChildAttr("img", "src")
 		title := strings.TrimSpace(e.ChildText("a.am"))
 		description := strings.ReplaceAll(e.ChildText("div.d1"), "\n", " ")
