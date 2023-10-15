@@ -124,7 +124,7 @@ func (h *Handler) SetupResultChannel() {
 
 		case <-h.TimeoutTimer.C:
 			h.ErrorChan <- fmt.Errorf("request timed out. Please try again later")
-			log.Errorln("Timed out")
+			h.CloseSSEConnection()
 			return
 		}
 	}
