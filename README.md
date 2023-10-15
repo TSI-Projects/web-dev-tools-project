@@ -2,6 +2,7 @@
 
 - [About Project](#about-project)
 - [Backend](#backend)
+   - [Environment Variables](#environment-variables)
    - [Server](#server)
    - [API](#api)
 - [Frontend](#frontend)
@@ -23,6 +24,20 @@ We hope that this repository serves as a valuable resource for fellow students a
 # Backend
 
 The backend of our application is written in Golang and serves as the foundation for data retrieval. To ensure the backend functions properly, you'll need to have the Golang runtime installed on your system. If you haven't installed it yet, please refer to the official [Golang documentation](https://go.dev/doc/install) for installation instructions.
+
+## Environment variables
+
+To change the server's port, you can use an environment variable.
+
+On Linux or MacOS, open your terminal and use the following command:
+```bash
+export SERVER_PORT=:8081  // default port 8080
+```
+
+On Windows, you can set the environment variable with the following command:
+```cmd
+set SERVER_PORT=:8081  // default port 8080
+```
 
 ## Server
 

@@ -3,6 +3,7 @@ package server
 import (
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/AndrejsPon00/web-dev-tools/backend/module"
 	"github.com/gorilla/handlers"
@@ -15,7 +16,7 @@ func Start() {
 	r.HandleFunc("/posts/search", basicMiddleware(productHandler)).Methods(http.MethodGet)
 
 	log.Println("Server is starting...")
-	log.Fatal(http.ListenAndServe(":8080", getCORSHandler(r)))
+	log.Fatal(http.ListenAndServe(getPort(), getCORSHandler(r)))
 }
 
 func productHandler(w http.ResponseWriter, r *http.Request) {
@@ -62,4 +63,12 @@ func getCORSHandler(r *mux.Router) http.Handler {
 	methodsOk := handlers.AllowedMethods([]string{"*"})
 
 	return handlers.CORS(originsOk, headersOk, methodsOk)(r)
+}
+
+func getPort() string {
+	port := os.Getenv(module.ENV_VAR_PORT)
+	if port == "" {
+		return module.DEFAULT_PORT
+	}
+	return port
 }
