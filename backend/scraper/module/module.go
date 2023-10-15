@@ -1,20 +1,30 @@
 package module
 
 const (
-	SOURCE_SS       = "ss"
-	SOURCE_PP       = "pp"
-	SOURCE_FACEBOOK = "facebook"
-	SOURCE_GELIOS   = "gelios"
-	SOURCE_BANKNOTE = "banknote"
+	SOURCE_SS       Source = "ss"
+	SOURCE_PP       Source = "pp"
+	SOURCE_FACEBOOK Source = "facebook"
+	SOURCE_GELIOS   Source = "gelios"
+	SOURCE_BANKNOTE Source = "banknote"
 )
 
 const (
 	MAX_UINT32_SIZE = 4294967295
 )
 
+var EVERY_SOURCE = []Source{
+	SOURCE_SS,
+	SOURCE_PP,
+	SOURCE_GELIOS,
+	SOURCE_BANKNOTE,
+	SOURCE_FACEBOOK,
+}
+
+type Source string
+
 type Pagination struct {
-	Source  string `json:"source"`
-	HasNext bool   `json:"has_next"`
+	Source  `json:"source"`
+	HasNext bool `json:"has_next"`
 }
 
 type PreviewPost struct {
@@ -43,7 +53,7 @@ type URLParams struct {
 }
 
 type Filter struct {
-	Sources  []string `schema:"sources,omitempty"`
+	Sources  []Source `schema:"sources,omitempty"`
 	Category []string `schema:"category,omitempty"`
 	PriceMax uint32   `schema:"price_max,omitempty"`
 	PriceMin uint32   `schema:"price_min,omitempty"`
