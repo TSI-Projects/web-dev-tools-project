@@ -13,10 +13,20 @@ import (
 
 func Start() {
 	r := mux.NewRouter()
-	r.HandleFunc("/posts/search", basicMiddleware(productHandler)).Methods(http.MethodGet)
+	r.HandleFunc("/posts/search", sseMiddleware(productHandler)).Methods(http.MethodGet)
+	r.HandleFunc("/sources", sourcesHandler).Methods(http.MethodGet)
 
 	log.Println("Server is starting...")
-	log.Fatal(http.ListenAndServe(getPort(), getCORSHandler(r)))
+	log.Fatal(http.ListenAndServe(":8080", getCORSHandler(r)))
+}
+
+func sourcesHandler(w http.ResponseWriter, r *http.Request) {
+	response := &module.Response{Sources: module.EVERY_SOURCE}
+	byteResponse, err := toByteArray(response)
+	if err != nil {
+		http.Error(w, "failed to decode sources to response", http.StatusInternalServerError)
+	}
+	w.Write(byteResponse)
 }
 
 func productHandler(w http.ResponseWriter, r *http.Request) {
@@ -43,7 +53,7 @@ func productHandler(w http.ResponseWriter, r *http.Request) {
 	handler.Clear()
 }
 
-func basicMiddleware(next http.HandlerFunc) http.HandlerFunc {
+func sseMiddleware(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/event-stream")
 		w.Header().Set("Cache-Control", "no-cache")

@@ -20,9 +20,9 @@ const (
 var EVERY_SOURCE = []Source{
 	SOURCE_SS,
 	SOURCE_PP,
-	SOURCE_GELIOS,
 	SOURCE_BANKNOTE,
-	SOURCE_FACEBOOK,
+	// SOURCE_GELIOS,
+	// SOURCE_FACEBOOK,
 }
 
 type Source string
@@ -45,6 +45,7 @@ type Error struct {
 }
 
 type Response struct {
+	Sources      []Source `json:"sources,omitempty"`
 	*Error       `json:"error,omitempty"`
 	*PreviewPost `json:"preview_post,omitempty"`
 }
