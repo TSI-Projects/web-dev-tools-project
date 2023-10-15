@@ -9,6 +9,11 @@ const (
 )
 
 const (
+	ENV_VAR_PORT = "SERVER_PORT"
+	DEFAULT_PORT = ":8080"
+)
+
+const (
 	MAX_UINT32_SIZE = 4294967295
 )
 
