@@ -62,6 +62,9 @@ func NewHandler() IHandler {
 }
 
 func (h *Handler) SetParams(params *module.URLParams) {
+	if len(params.Sources) == 0 {
+		params.Sources = module.EVERY_SOURCE
+	}
 	h.Scraper.Params = params
 }
 
