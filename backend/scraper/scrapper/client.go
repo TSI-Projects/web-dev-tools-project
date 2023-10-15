@@ -34,8 +34,10 @@ func (c *Client) ScrapPosts() {
 			go banknote.ScrapPosts(c.Params.SearchedItem, c.Params.BanknoteCurrentPage, c.Params.Filter, c.WG, c.PaginationChan, c.ResultChan, c.ErrorChan)
 		case module.SOURCE_FACEBOOK:
 			//add scrap facebook
+			c.WG.Done()
 		case module.SOURCE_GELIOS:
 			//add scrap gelios
+			c.WG.Done()
 		case module.SOURCE_PP:
 			go pp.ScrapPosts(c.Params.SearchedItem, c.Params.PPCurrentPage, c.Params.Filter, c.WG, c.PaginationChan, c.ResultChan, c.ErrorChan)
 		default:
