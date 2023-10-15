@@ -14,7 +14,7 @@ import (
 )
 
 const (
-	CONNECTION_TIMEOUT    = 5 * time.Second
+	CONNECTION_TIMEOUT    = 15 * time.Second
 	POSTS_BUFFER_CAPACITY = 25
 )
 
@@ -127,7 +127,7 @@ func (h *Handler) SetupResultChannel() {
 
 		case <-h.TimeoutTimer.C:
 			h.ErrorChan <- fmt.Errorf("request timed out. Please try again later")
-			log.Errorln("Timed out")
+			h.CloseSSEConnection()
 			return
 		}
 	}
