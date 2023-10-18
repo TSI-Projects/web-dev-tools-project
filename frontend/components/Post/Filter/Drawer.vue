@@ -24,7 +24,8 @@
                 </div>
                 <post-filter-search-input
                     v-model="query"
-                    :loading="loading"
+                    :loading="props.loading"
+                    @apply-filters="applyFilters"
                 />
             </div>
             <q-separator />

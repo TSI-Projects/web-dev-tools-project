@@ -2,7 +2,7 @@
     <div>
         <q-infinite-scroll
             :offset="250"
-            :disable="error || eof"
+            :disable="! parsedQuery.query || error || eof"
             @load="onLoad"
         >
             <div
@@ -31,6 +31,9 @@
                 </div>
             </template>
         </q-infinite-scroll>
+        <template v-if="! parsedQuery.query">
+            <post-no-query-search @apply-search="applySearch" />
+        </template>
         <template v-else-if="error">
             <post-error @refresh="refetch" />
         </template>
@@ -126,11 +129,13 @@ watch(parsedQuery, () => {
 
     window.scrollTo(0, 0);
 
-    resetEofSources();
+    if (parsedQuery.value.query) {
+        resetEofSources();
 
-    execute({
-        page: page.value = 1,
-    });
+        execute({
+            page: page.value = 1,
+        });
+    }
 });
 
 const onLoad: QInfiniteScroll['onLoad'] = (_, done) => {
@@ -141,7 +146,7 @@ const onLoad: QInfiniteScroll['onLoad'] = (_, done) => {
 
             done();
         },
-    })
+    });
 };
 
 const refetch = () => {
@@ -152,6 +157,13 @@ const refetch = () => {
 
 const navigateToPost = (url: string) => {
     window.open(url, '_blank');
+};
+
+const applySearch = (query: string | undefined) => {
+    parsedQuery.value = {
+        ...parsedQuery.value,
+        query,
+    };
 };
 
 onBeforeUnmount(() => close());
