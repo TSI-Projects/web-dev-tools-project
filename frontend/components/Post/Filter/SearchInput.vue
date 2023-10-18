@@ -1,15 +1,17 @@
 <template>
     <q-input
+        ref="inputRef"
         :model-value="props.modelValue"
         bottom-slots
-        standout="bg-primary text-white"
+        standout="bg-primary"
         counter
         clearable
         :lazy-rules="true"
         :maxlength="32"
         :readonly="props.loading"
-        @clear="() => emits('update:modelValue', undefined)"
-        @update:model-value="(value) => emits('update:modelValue', value as string | undefined)"
+        @clear="() => updateModelValue(undefined)"
+        @update:model-value="updateModelValue"
+        @keydown="onKeyDown"
     >
         <template #prepend>
             <q-icon :name="mdiMagnify" />
@@ -27,6 +29,7 @@ export type Props = {
 
 export type Emits = {
     (e: 'update:modelValue', query?: string): void;
+    (e: 'applyFilters'): void;
 };
 
 const emits = defineEmits<Emits>();
@@ -34,4 +37,31 @@ const props = withDefaults(defineProps<Props>(), {
     modelValue: undefined,
     loading: false,
 });
+
+const inputRef = ref();
+
+const onKeyDown = (event: KeyboardEvent) => {
+    if (event.code === 'Enter') {
+        inputRef.value?.blur();
+
+        emits('applyFilters');
+    }
+};
+
+const updateModelValue = (value: string | number | null | undefined = undefined) => {
+    if (value) {
+        value = value.toString();
+        
+        if (value.length === 0) {
+
+            emits('update:modelValue', undefined);
+        } else {
+
+            emits('update:modelValue', value);
+        }
+    } else {
+
+        emits('update:modelValue', undefined);
+    }
+}
 </script>
