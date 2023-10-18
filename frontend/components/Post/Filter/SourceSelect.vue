@@ -3,7 +3,7 @@
         Источники:
     </div>
     <q-select
-        :options="sources"
+        :options="options"
         standout="bg-primary text-white"
         clearable
         use-input
@@ -11,24 +11,41 @@
         emit-value
         map-options
         :model-value="props.modelValue"
-        :readonly="props.loading"
+        :loading="props.loading"
+        :readonly="props.readonly"
         @clear="() => emits('update:modelValue', [])"
         @filter="filterOptions"
         @update:model-value="(selected) => emits('update:modelValue', selected)"
-    />
+    >
+        <template #option="{ itemProps, selected, opt, toggleOption }">
+            <q-item v-bind="itemProps">
+                <q-item-section avatar>
+                    <q-checkbox
+                        :model-value="selected"
+                        @click="() => toggleOption(opt)"
+                    />
+                </q-item-section>
+                <q-item-section>
+                    {{ opt.name || `N/A (${opt.id})` }}
+                </q-item-section>
+            </q-item>
+        </template>
+    </q-select>
 </template>
 
 <script lang="ts" setup>
 import { QSelect } from 'quasar';
 
 export type Option = {
-    label: string;
-    value: string;
+    id: string;
+    name?: string;
 };
 
 export type Props = {
+    sources: Option[];
     modelValue: string[] | string | undefined;
     loading?: boolean;
+    readonly?: boolean;
 };
 
 export type Emits = {
@@ -38,29 +55,24 @@ export type Emits = {
 const emits = defineEmits<Emits>();
 const props = withDefaults(defineProps<Props>(), {
     modelValue: undefined,
+    readonly: false,
     loading: false,
 });
 
-// TODO: add more options
-const options: Option[] = [
-    {
-        label: 'SS.LV',
-        value: 'sslv',
-    },
-];
+const filterData = useFilterData();
 
-const sources = ref<Option[]>(options);
+const options = ref<Option[]>(props.sources);
 
 const filterOptions: QSelect['onFilter'] = (value, update) => {
     update(() => {
         if (value.length === 0) {
-            sources.value = options;
+            options.value = props.sources;
         } else {
             const needle = value.toLowerCase();
 
-            sources.value = options.filter((v) => {
-                return v.label.toLowerCase().indexOf(needle) > -1
-                    || v.value.toLowerCase().indexOf(needle) > -1;
+            options.value = props.sources.filter((v) => {
+                return v.id.toLowerCase().indexOf(needle) > -1
+                    || (v.name && v.name?.toLowerCase().indexOf(needle) > -1);
             });
         }
     });

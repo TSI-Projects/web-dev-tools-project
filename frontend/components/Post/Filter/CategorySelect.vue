@@ -11,7 +11,7 @@
         emit-value
         map-options
         :model-value="props.modelValue"
-        :readonly="props.loading"
+        :readonly="props.readonly"
         @clear="() => emits('update:modelValue', [])"
         @filter="filterOptions"
         @update:model-value="(selected) => emits('update:modelValue', selected)"
@@ -29,7 +29,7 @@ export type Option = {
 
 export type Props = {
     modelValue: string[] | string | undefined;
-    loading?: boolean;
+    readonly?: boolean;
 };
 
 export type Emits = {
@@ -39,7 +39,7 @@ export type Emits = {
 const emits = defineEmits<Emits>();
 const props = withDefaults(defineProps<Props>(), {
     modelValue: undefined,
-    loading: false,
+    readonly: false,
 });
 
 // TODO: add more options
