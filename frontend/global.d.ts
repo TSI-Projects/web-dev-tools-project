@@ -1,5 +1,3 @@
-import type { OpenGraph, TwitterCard } from "./composables/useSeoMetaFactory";
-
 declare module 'nuxt/schema' {
     // App config
     interface AppConfigInput {
