@@ -31,31 +31,8 @@
                 </div>
             </template>
         </q-infinite-scroll>
-        <template v-if="error">
-            <div class="row justify-center">
-                <div class="col-12 col-xl-6 col-lg-6 col-md-6 col-sm-12">
-                    <q-banner
-                        class="text-white bg-red-10 shadow-2"
-                        rounded
-                    >
-                        <template #avatar>
-                            <q-icon :name="mdiAlertDecagram" />
-                        </template>
-                        <template #action>
-                            <q-btn
-                                flat
-                                @click="() => refetch()"
-                            >
-                                <q-icon
-                                    left
-                                    :name="mdiReload"
-                                /> Повторить
-                            </q-btn>
-                        </template>
-                        Ошибка загрузки данных с сервера.
-                    </q-banner>
-                </div>
-            </div>
+        <template v-else-if="error">
+            <post-error @refresh="refetch" />
         </template>
         <client-only>
             <teleport to="#q-page-container">
@@ -78,7 +55,6 @@
 </template>
 
 <script lang="ts" setup>
-import { mdiAlertDecagram, mdiReload } from '@quasar/extras/mdi-v7';
 import { QInfiniteScroll } from 'quasar';
 import { FilterFields } from '~/components/Post/Filter/Drawer.vue';
 
