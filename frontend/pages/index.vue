@@ -2,7 +2,7 @@
     <div>
         <q-infinite-scroll
             :offset="250"
-            :disable="error || eof"
+            :disable="! parsedQuery.query || error || eof"
             @load="onLoad"
         >
             <div
@@ -31,31 +31,11 @@
                 </div>
             </template>
         </q-infinite-scroll>
-        <template v-if="error">
-            <div class="row justify-center">
-                <div class="col-12 col-xl-6 col-lg-6 col-md-6 col-sm-12">
-                    <q-banner
-                        class="text-white bg-red-10 shadow-2"
-                        rounded
-                    >
-                        <template #avatar>
-                            <q-icon :name="mdiAlertDecagram" />
-                        </template>
-                        <template #action>
-                            <q-btn
-                                flat
-                                @click="() => refetch()"
-                            >
-                                <q-icon
-                                    left
-                                    :name="mdiReload"
-                                /> Повторить
-                            </q-btn>
-                        </template>
-                        Ошибка загрузки данных с сервера.
-                    </q-banner>
-                </div>
-            </div>
+        <template v-if="! parsedQuery.query">
+            <post-no-query-search @apply-search="applySearch" />
+        </template>
+        <template v-else-if="error">
+            <post-error @refresh="refetch" />
         </template>
         <client-only>
             <teleport to="#q-page-container">
@@ -78,7 +58,6 @@
 </template>
 
 <script lang="ts" setup>
-import { mdiAlertDecagram, mdiReload } from '@quasar/extras/mdi-v7';
 import { QInfiniteScroll } from 'quasar';
 import { FilterFields } from '~/components/Post/Filter/Drawer.vue';
 
@@ -150,11 +129,13 @@ watch(parsedQuery, () => {
 
     window.scrollTo(0, 0);
 
-    resetEofSources();
+    if (parsedQuery.value.query) {
+        resetEofSources();
 
-    execute({
-        page: page.value = 1,
-    });
+        execute({
+            page: page.value = 1,
+        });
+    }
 });
 
 const onLoad: QInfiniteScroll['onLoad'] = (_, done) => {
@@ -165,7 +146,7 @@ const onLoad: QInfiniteScroll['onLoad'] = (_, done) => {
 
             done();
         },
-    })
+    });
 };
 
 const refetch = () => {
@@ -176,6 +157,13 @@ const refetch = () => {
 
 const navigateToPost = (url: string) => {
     window.open(url, '_blank');
+};
+
+const applySearch = (query: string | undefined) => {
+    parsedQuery.value = {
+        ...parsedQuery.value,
+        query,
+    };
 };
 
 onBeforeUnmount(() => close());

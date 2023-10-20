@@ -47,3 +47,23 @@ body {
 .footer__bottom {
     background-color: rgba(0, 0, 0, .15);
 }
+
+.q-field {
+    &--standout {
+        &.q-field--highlighted {
+            .q-field__native, .q-field__prefix, .q-field__suffix, .q-field__prepend, .q-field__append, .q-field__input {
+                color: #fff !important;
+            }
+        }
+    }
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type=number] {
+  -moz-appearance: textfield;
+}

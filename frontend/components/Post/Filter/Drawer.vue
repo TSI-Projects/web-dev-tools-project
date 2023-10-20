@@ -24,7 +24,9 @@
                 </div>
                 <post-filter-search-input
                     v-model="query"
+                    :loading="props.loading"
                     :readonly="props.readonly"
+                    @apply-filters="applyFilters"
                 />
             </div>
             <q-separator />
@@ -77,11 +79,16 @@
                     <div class="col-grow">
                         <q-btn
                             class="full-width"
-                            label="Применить"
                             color="primary"
                             :loading="props.readonly"
                             @click.passive="applyFilters"
-                        />
+                        >
+                            <q-icon
+                                left
+                                :name="mdiLayersSearch"
+                            />
+                            Применить
+                        </q-btn>
                     </div>
                 </div>
             </div>
@@ -90,7 +97,7 @@
 </template>
 
 <script lang="ts" setup>
-import { mdiFilter, mdiUpdate } from '@quasar/extras/mdi-v7';
+import { mdiFilter, mdiLayersSearch, mdiUpdate } from '@quasar/extras/mdi-v7';
 import { PriceRange } from './PriceRange.vue';
 
 export type FilterFields = {
