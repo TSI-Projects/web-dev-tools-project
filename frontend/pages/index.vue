@@ -50,7 +50,7 @@
             <teleport to="#q-layout">
                 <post-filter-drawer
                     v-model="parsedQuery"
-                    :loading="pending"
+                    :readonly="pending"
                 />
             </teleport>
         </client-only>

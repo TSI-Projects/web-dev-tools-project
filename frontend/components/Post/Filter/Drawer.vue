@@ -25,6 +25,7 @@
                 <post-filter-search-input
                     v-model="query"
                     :loading="props.loading"
+                    :readonly="props.readonly"
                     @apply-filters="applyFilters"
                 />
             </div>
@@ -36,19 +37,21 @@
                     <div class="col">
                         <post-filter-source-select
                             v-model="sources"
-                            :loading="props.loading"
+                            :sources="filter.sources"
+                            :loading="filterDataLoading"
+                            :readonly="props.readonly"
                         />
                     </div>
                     <div class="col">
                         <post-filter-category-select
                             v-model="categories"
-                            :loading="props.loading"
+                            :readonly="props.readonly"
                         />
                     </div>
                     <div class="col">
                         <post-filter-price-range
                             v-model="price"
-                            :loading="props.loading"
+                            :readonly="props.readonly"
                         />
                     </div>
                 </div>
@@ -61,7 +64,7 @@
                     <div class="col-auto">
                         <q-btn
                             :icon="mdiUpdate"
-                            :disable="loading"
+                            :disable="props.readonly"
                             color="accent"
                             @click.passive="clearFilters"
                         >
@@ -77,7 +80,7 @@
                         <q-btn
                             class="full-width"
                             color="primary"
-                            :loading="props.loading"
+                            :loading="props.readonly"
                             @click.passive="applyFilters"
                         >
                             <q-icon
@@ -109,7 +112,7 @@ export type FilterFields = {
 
 export type Props = {
     modelValue: FilterFields;
-    loading?: boolean;
+    readonly?: boolean;
 };
 
 export type Emits = {
@@ -118,7 +121,7 @@ export type Emits = {
 
 const emits = defineEmits<Emits>();
 const props = withDefaults(defineProps<Props>(), {
-    loading: false,
+    readonly: false,
 });
 
 const query = ref<string | undefined>(props.modelValue.query);
@@ -126,6 +129,7 @@ const sources = ref<string[] | string | undefined>(props.modelValue.sources);
 const categories = ref<string[] | string | undefined>(props.modelValue.categories);
 const price = ref<PriceRange>({ min: props.modelValue.price.min, max: props.modelValue.price.max });
 
+const filterData = useFilterData();
 const drawerState = useFilterDrawerState();
 
 const applyFilters = () => {
@@ -158,4 +162,10 @@ watch(() => props.modelValue, (newModelValue) => {
         max: newModelValue.price.max,
     };
 });
+
+const { data: filter, pending: filterDataLoading } = useLazyAsyncData('filter-data', () => filterData.fetchFilterData(), {
+    default: () => ({
+        sources: [],
+    }),
+})
 </script>

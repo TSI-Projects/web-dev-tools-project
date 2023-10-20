@@ -54,6 +54,28 @@ This command handles the automatic installation of all required dependencies and
 <details>
 <summary>
 <code>GET</code>
+<code>HTTP</code>
+<code><b>/sources</b></code> - Get sources list
+</summary>
+
+#### Response
+```json
+{
+  "sources": [
+    "ss",
+    "pp",
+    "facebook",
+    "banknote"
+  ]
+}
+```
+
+
+</details>
+
+<details>
+<summary>
+<code>GET</code>
 <code>SSE</code>
 <code><b>/posts/search</b></code> - Search for posts
 </summary>

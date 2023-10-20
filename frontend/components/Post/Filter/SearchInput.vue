@@ -9,7 +9,8 @@
         clearable
         :lazy-rules="true"
         :maxlength="32"
-        :readonly="props.loading"
+        :readonly="props.readonly"
+        :loading="props.loading"
         :shadow-text="shadowText"
         @clear="() => updateModelValue(undefined)"
         @update:model-value="updateModelValue"
@@ -27,6 +28,7 @@ import { mdiMagnify } from '@quasar/extras/mdi-v7';
 export type Props = {
     modelValue?: string;
     loading?: boolean;
+    readonly?: boolean;
     placeholder?: string;
     label?: string;
 };
@@ -40,6 +42,7 @@ const emits = defineEmits<Emits>();
 const props = withDefaults(defineProps<Props>(), {
     modelValue: undefined,
     loading: false,
+    readonly: false,
     placeholder: undefined,
     label: undefined,
 });
