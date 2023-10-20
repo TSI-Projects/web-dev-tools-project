@@ -9,7 +9,7 @@
                 standout="bg-primary text-white"
                 type="number"
                 clearable
-                :readonly="props.loading"
+                :readonly="props.readonly"
                 label="Мин."
                 @clear="() => min = undefined"
             />
@@ -20,7 +20,7 @@
                 standout="bg-primary text-white"
                 type="number"
                 clearable
-                :readonly="props.loading"
+                :readonly="props.readonly"
                 label="Макс."
                 @clear="() => max = undefined"
             />
@@ -35,7 +35,7 @@ export type PriceRange = {
 };
 
 export type Props = {
-    loading?: boolean;
+    readonly?: boolean;
     modelValue?: PriceRange;
 };
 
@@ -49,7 +49,7 @@ const props = withDefaults(defineProps<Props>(), {
         min: undefined,
         max: undefined,
     }),
-    loading: false,
+    readonly: false,
 });
 
 const min = ref<number | undefined>(props.modelValue.min);
