@@ -6,6 +6,7 @@
                     <post-filter-search-input
                         v-model="query"
                         placeholder="RTX 3060"
+                        @apply-filters="applySearch"
                     />
                 </q-card-section>
                 <q-separator />
