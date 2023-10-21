@@ -77,10 +77,14 @@ export default function () {
                 close();
             }
 
+            const filterSourcesState = useFilterSourcesState();
+
             const params = parametersResolver();
 
             // get sources
-            const allSources = Array.from(params.query.sources || []);
+            const allSources = ! params.query.sources
+                ? filterSourcesState.value
+                : Array.from<string>(params.query.sources || []);
 
             const availableSources = new Set(allSources.filter((source: string) => {
                 return ! eofSources.has(source);

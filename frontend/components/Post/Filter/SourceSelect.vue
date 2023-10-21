@@ -17,6 +17,11 @@
         @filter="filterOptions"
         @update:model-value="(selected) => emits('update:modelValue', selected)"
     >
+        <template #selected-item="{ opt }">
+            <q-chip>
+                {{ opt.label || `N/A (${opt.value})` }}
+            </q-chip>
+        </template>
         <template #option="{ itemProps, selected, opt, toggleOption }">
             <q-item v-bind="itemProps">
                 <q-item-section avatar>
@@ -26,7 +31,7 @@
                     />
                 </q-item-section>
                 <q-item-section>
-                    {{ opt.name || `N/A (${opt.id})` }}
+                    {{ opt.label || `N/A (${opt.value})` }}
                 </q-item-section>
             </q-item>
         </template>
@@ -37,8 +42,8 @@
 import { QSelect } from 'quasar';
 
 export type Option = {
-    id: string;
-    name?: string;
+    value: string;
+    label?: string;
 };
 
 export type Props = {
@@ -59,8 +64,6 @@ const props = withDefaults(defineProps<Props>(), {
     loading: false,
 });
 
-const filterData = useFilterData();
-
 const options = ref<Option[]>(props.sources);
 
 const filterOptions: QSelect['onFilter'] = (value, update) => {
@@ -71,8 +74,8 @@ const filterOptions: QSelect['onFilter'] = (value, update) => {
             const needle = value.toLowerCase();
 
             options.value = props.sources.filter((v) => {
-                return v.id.toLowerCase().indexOf(needle) > -1
-                    || (v.name && v.name?.toLowerCase().indexOf(needle) > -1);
+                return v.value.toLowerCase().indexOf(needle) > -1
+                    || (v.label && v.label?.toLowerCase().indexOf(needle) > -1);
             });
         }
     });

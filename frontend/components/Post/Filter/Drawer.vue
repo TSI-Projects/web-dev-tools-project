@@ -24,7 +24,6 @@
                 </div>
                 <post-filter-search-input
                     v-model="query"
-                    :loading="props.loading"
                     :readonly="props.readonly"
                     @apply-filters="applyFilters"
                 />
@@ -39,12 +38,6 @@
                             v-model="sources"
                             :sources="filter.sources"
                             :loading="filterDataLoading"
-                            :readonly="props.readonly"
-                        />
-                    </div>
-                    <div class="col">
-                        <post-filter-category-select
-                            v-model="categories"
                             :readonly="props.readonly"
                         />
                     </div>
@@ -163,9 +156,16 @@ watch(() => props.modelValue, (newModelValue) => {
     };
 });
 
-const { data: filter, pending: filterDataLoading } = useLazyAsyncData('filter-data', () => filterData.fetchFilterData(), {
+const filterSources = useFilterSourcesState();
+
+const { data: filter, pending: filterDataLoading } = useAsyncData('filter-data', () => filterData.fetchFilterData(), {
     default: () => ({
         sources: [],
     }),
-})
+    lazy: true,
+});
+
+watch(filter, (newFilter) => {
+    filterSources.value = newFilter.sources.map((v) => v.value);
+});
 </script>

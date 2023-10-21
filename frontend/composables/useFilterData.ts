@@ -1,7 +1,7 @@
 
 export type Source = {
-    id: string;
-    name?: string;
+    value: string;
+    label?: string;
 };
 
 export type DefaultFunctionResult = {
@@ -39,8 +39,8 @@ export default function (): DefaultFunctionResult {
 
         return {
             sources: sourcesResponse.sources.map((v) => ({
-                id: v,
-                name: SOURCE_NAMES[v] ?? undefined,
+                value: v,
+                label: SOURCE_NAMES[v] ?? undefined,
             })),
         };
     }

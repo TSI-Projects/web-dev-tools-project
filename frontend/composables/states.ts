@@ -1,1 +1,2 @@
 export const useFilterDrawerState = () => useState<boolean | undefined>('filter.drawer.state', () => undefined);
+export const useFilterSourcesState = () => useState<string[]>('filter.drawer.sources.state', () => []);
